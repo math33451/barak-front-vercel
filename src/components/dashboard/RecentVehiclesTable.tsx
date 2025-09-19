@@ -1,97 +1,68 @@
 import React from "react";
 import DataTable, { Column } from "@/components/ui/DataTable";
-import StatusBadge, { StatusType } from "@/components/ui/StatusBadge";
+import StatusBadge, { StatusType } from "@/components/ui/StatusBadge"; // Import StatusType
+import { Vehicle } from "@/types";
+import Image from "next/image";
 
-interface Vehicle {
-  [key: string]: unknown;
-  name: string;
-  details: string;
-  year: string;
-  price: string;
-  status: string;
-  statusType: StatusType;
+interface RecentVehiclesTableProps {
+  vehicles: Vehicle[];
 }
 
-export default function RecentVehiclesTable() {
+export default function RecentVehiclesTable({ vehicles }: RecentVehiclesTableProps) {
   const columns: Column<Vehicle>[] = [
     {
-      key: "vehicle",
+      key: "name",
       title: "Veículo",
       render: (_: unknown, item: Vehicle) => (
         <div className="flex items-center">
+          {item.imageUrl && (
+            <Image
+              src={item.imageUrl}
+              alt={item.name}
+              width={40}
+              height={40}
+              className="rounded-md object-cover"
+            />
+          )}
           <div className="ml-4">
             <div className="text-sm font-medium text-[color:var(--heading)]">
               {item.name}
             </div>
             <div className="text-sm text-[color:var(--muted)]">
-              {item.details}
+              {item.type === "car" ? "Carro" : "Moto"}
             </div>
           </div>
         </div>
       ),
     },
     {
-      key: "year",
-      title: "Ano/Modelo",
-    },
-    {
       key: "price",
       title: "Preço",
       render: (value: unknown) => (
         <span className="text-sm font-medium text-[color:var(--heading)]">
-          {value as string}
+          {new Intl.NumberFormat("pt-BR", {
+            style: "currency",
+            currency: "BRL",
+          }).format(value as number)}
         </span>
       ),
     },
     {
       key: "status",
       title: "Status",
-      render: (value: unknown, item: Vehicle) => (
-        <StatusBadge status={item.statusType} label={value as string} />
-      ),
-    },
-  ];
-
-  const data: Vehicle[] = [
-    {
-      name: "Toyota Corolla XEi",
-      details: "Sedan • Automático • Prata",
-      year: "2023/2024",
-      price: "R$ 142.900",
-      status: "Disponível",
-      statusType: "disponivel",
-    },
-    {
-      name: "Honda CB 500X",
-      details: "Moto • Trail • Vermelha",
-      year: "2022/2022",
-      price: "R$ 39.900",
-      status: "Disponível",
-      statusType: "disponivel",
-    },
-    {
-      name: "Jeep Compass Limited",
-      details: "SUV • Automático • Preto",
-      year: "2023/2023",
-      price: "R$ 189.900",
-      status: "Reservado",
-      statusType: "reservado",
-    },
-    {
-      name: "Volkswagen Golf GTI",
-      details: "Hatch • Automático • Branco",
-      year: "2022/2023",
-      price: "R$ 249.900",
-      status: "Em promoção",
-      statusType: "promocao",
-    },
-    {
-      name: "Yamaha MT-07",
-      details: "Moto • Naked • Azul",
-      year: "2023/2024",
-      price: "R$ 48.900",
-      status: "Disponível",
-      statusType: "disponivel",
+      render: (value: unknown) => {
+        const status = value as "sold" | "in_stock";
+        const statusMap: Record<typeof status, { label: string; type: StatusType }> = { // Explicitly type statusMap
+          sold: { label: "Vendido", type: "vendido" },
+          in_stock: { label: "Em Estoque", type: "disponivel" },
+        };
+        return (
+          <StatusBadge
+            status={statusMap[status].type}
+            label={statusMap[status].label}
+          />
+        );
+      },
     },
   ];
 
@@ -99,7 +70,7 @@ export default function RecentVehiclesTable() {
     <DataTable<Vehicle>
       title="Veículos Adicionados Recentemente"
       columns={columns}
-      data={data}
+      data={vehicles}
       viewAllLink="/veiculos"
     />
   );

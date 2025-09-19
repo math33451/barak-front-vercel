@@ -2,23 +2,18 @@ import React from "react";
 import { Doughnut } from "react-chartjs-2";
 import { TooltipItem } from "chart.js";
 import ChartContainer from "@/components/ui/ChartContainer";
+import { BrandDistribution } from "@/types";
 
-export default function BrandDistributionChart() {
-  // Dados para o gráfico de distribuição por marca
-  const brandData = {
-    labels: [
-      "Toyota",
-      "Honda",
-      "Volkswagen",
-      "Jeep",
-      "Yamaha",
-      "Kawasaki",
-      "BMW",
-      "Outros",
-    ],
+interface BrandDistributionChartProps {
+  brandData: BrandDistribution[];
+}
+
+export default function BrandDistributionChart({ brandData }: BrandDistributionChartProps) {
+  const chartData = {
+    labels: brandData.map(item => item.brand),
     datasets: [
       {
-        data: [28, 24, 16, 14, 12, 10, 8, 18],
+        data: brandData.map(item => item.count),
         backgroundColor: [
           "rgba(2, 132, 199, 0.9)",
           "rgba(14, 165, 233, 0.9)",
@@ -29,17 +24,16 @@ export default function BrandDistributionChart() {
           "rgba(12, 74, 110, 0.9)",
           "rgba(224, 242, 254, 0.9)",
         ],
-        borderColor: Array(8).fill("rgba(255, 255, 255, 0.8)"),
+        borderColor: Array(brandData.length).fill("rgba(255, 255, 255, 0.8)"),
         borderWidth: 2,
         hoverOffset: 6,
       },
     ],
   };
 
-  // Configurações do gráfico de distribuição por marca
   const brandOptions = {
     responsive: true,
-    maintainAspectRatio: false, // Set to false to control size via container
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: "right" as const,
@@ -53,7 +47,7 @@ export default function BrandDistributionChart() {
         },
       },
       title: {
-        display: false, // Remove title from chart as ChartContainer has its own
+        display: false,
       },
       tooltip: {
         callbacks: {
@@ -64,13 +58,13 @@ export default function BrandDistributionChart() {
               (a: number, b: number) => a + b,
               0
             );
-            const percentage = Math.round((context.raw as number / total) * 100);
+            const percentage = Math.round(((context.raw as number) / total) * 100);
             return `${label}: ${value} (${percentage}%)`;
           },
         },
       },
     },
-    cutout: "60%", // Slightly smaller donut hole
+    cutout: "60%",
     animation: {
       animateScale: true,
     },
@@ -79,7 +73,7 @@ export default function BrandDistributionChart() {
   return (
     <ChartContainer title="Marcas mais Populares">
       <div className="h-48 md:h-56 lg:h-64 mx-auto relative">
-        <Doughnut data={brandData} options={brandOptions} />
+        <Doughnut data={chartData} options={brandOptions} />
       </div>
     </ChartContainer>
   );

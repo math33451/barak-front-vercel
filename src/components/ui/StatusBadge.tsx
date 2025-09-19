@@ -6,7 +6,11 @@ export type StatusType =
   | "promocao"
   | "testdrive"
   | "visita"
-  | "negociacao";
+  | "negociacao"
+  | "vendido"
+  | "agendado"
+  | "concluido"
+  | "cancelado";
 
 const statusStyles: Record<StatusType, { bg: string; text: string }> = {
   disponivel: { bg: "bg-green-100", text: "text-green-800" },
@@ -15,6 +19,10 @@ const statusStyles: Record<StatusType, { bg: string; text: string }> = {
   testdrive: { bg: "bg-blue-100", text: "text-blue-800" },
   visita: { bg: "bg-purple-100", text: "text-purple-800" },
   negociacao: { bg: "bg-green-100", text: "text-green-800" },
+  vendido: { bg: "bg-red-100", text: "text-red-800" }, // New
+  agendado: { bg: "bg-indigo-100", text: "text-indigo-800" }, // New
+  concluido: { bg: "bg-green-100", text: "text-green-800" }, // New
+  cancelado: { bg: "bg-red-100", text: "text-red-800" }, // New
 };
 
 type StatusBadgeProps = {

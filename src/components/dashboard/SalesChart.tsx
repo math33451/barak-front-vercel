@@ -1,45 +1,37 @@
 import React from "react";
 import { Line } from "react-chartjs-2";
 import ChartContainer from "@/components/ui/ChartContainer";
+import { Sale } from "@/types";
 
-export default function SalesChart() {
-  // Dados para o gráfico de vendas mensais
-  const salesData = {
-    labels: [
-      "Jan",
-      "Fev",
-      "Mar",
-      "Abr",
-      "Mai",
-      "Jun",
-      "Jul",
-      "Ago",
-      "Set",
-      "Out",
-      "Nov",
-      "Dez",
-    ],
+interface SalesChartProps {
+  salesData: Sale[];
+}
+
+export default function SalesChart({ salesData }: SalesChartProps) {
+  if (!salesData || salesData.length === 0) {
+    return (
+      <ChartContainer>
+        <div className="flex items-center justify-center h-full text-gray-500">
+          No sales data available.
+        </div>
+      </ChartContainer>
+    );
+  }
+
+  const chartData = {
+    labels: salesData.map(sale => new Date(sale.date).toLocaleDateString('pt-BR', { month: 'short', day: 'numeric' })),
     datasets: [
       {
-        label: "Carros",
-        data: [65, 59, 80, 81, 56, 55, 72, 68, 75, 82, 90, 95],
+        label: "Vendas",
+        data: salesData.map(sale => sale.amount),
         borderColor: "rgb(2, 132, 199)",
         backgroundColor: "rgba(2, 132, 199, 0.1)",
-        tension: 0.3,
-        fill: true,
-      },
-      {
-        label: "Motos",
-        data: [28, 32, 40, 42, 38, 44, 46, 50, 48, 52, 58, 62],
-        borderColor: "rgb(14, 165, 233)",
-        backgroundColor: "rgba(14, 165, 233, 0.1)",
         tension: 0.3,
         fill: true,
       },
     ],
   };
 
-  // Configurações do gráfico de vendas
   const salesOptions = {
     responsive: true,
     plugins: {
@@ -48,7 +40,7 @@ export default function SalesChart() {
       },
       title: {
         display: true,
-        text: "Vendas Mensais",
+        text: "Vendas Recentes",
         color: "#0f172a",
         font: {
           size: 16,
@@ -92,7 +84,7 @@ export default function SalesChart() {
 
   return (
     <ChartContainer>
-      <Line data={salesData} options={salesOptions} />
+      <Line data={chartData} options={salesOptions} />
     </ChartContainer>
   );
 }
