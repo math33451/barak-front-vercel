@@ -24,7 +24,7 @@ const NavItem = ({ href, icon, label, isActive = false }: NavItemProps) => (
     href={href}
     className={`flex items-center gap-3 p-3 rounded-md ${
       isActive
-        ? "bg-[color:var(--primary)] bg-opacity-10 text-white"
+        ? "bg-[color:var(--primary)] bg-opacity-10 text-[color:var(--primary)]" // Changed text-white to text-[color:var(--primary)]
         : "hover:bg-gray-100 text-[color:var(--foreground)]"
     }`}
   >

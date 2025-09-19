@@ -9,10 +9,12 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    if (isAuthenticated) {
-      router.push('/dashboard');
-    } else {
-      router.push('/login');
+    if (typeof window !== 'undefined') { // Ensure this runs only in the browser
+      if (isAuthenticated) {
+        router.push('/dashboard');
+      } else {
+        router.push('/login');
+      }
     }
   }, [isAuthenticated, router]);
 
