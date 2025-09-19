@@ -1,7 +1,7 @@
 import React from "react";
 import { Doughnut } from "react-chartjs-2";
 import { TooltipItem } from "chart.js";
-import ChartContainer from "../ui/ChartContainer";
+import ChartContainer from "@/components/ui/ChartContainer";
 
 export default function BrandDistributionChart() {
   // Dados para o gráfico de distribuição por marca

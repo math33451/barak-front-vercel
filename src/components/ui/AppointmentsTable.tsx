@@ -1,6 +1,6 @@
 import React from "react";
-import DataTable, { Column } from "../ui/DataTable";
-import StatusBadge, { StatusType } from "../ui/StatusBadge";
+import DataTable, { Column } from "@/components/ui/DataTable";
+import StatusBadge, { StatusType } from "@/components/ui/StatusBadge";
 
 interface Appointment {
   [key: string]: unknown;

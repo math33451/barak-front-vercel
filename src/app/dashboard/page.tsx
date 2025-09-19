@@ -16,13 +16,13 @@ import {
   ArcElement,
 } from "chart.js";
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import StatCard from "@/components/ui/StatCard";
+import StatCard from "@/components/dashboard/StatCard";
 import SalesChart from "@/components/dashboard/SalesChart";
 import VehicleStockChart from "@/components/dashboard/VehicleStockChart";
 import PerformanceChart from "@/components/dashboard/PerformanceChart";
-import BrandDistributionChart from "@/components/dashboard/BrandDistributionChart";
+import BrandDistributionChart from "@/components/ui/BrandDistributionChart";
 import RecentVehiclesTable from "@/components/dashboard/RecentVehiclesTable";
-import AppointmentsTable from "@/components/dashboard/AppointmentsTable";
+import AppointmentsTable from "@/components/ui/AppointmentsTable";
 
 // Register Chart.js components
 ChartJS.register(
