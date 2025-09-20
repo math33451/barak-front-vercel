@@ -100,3 +100,13 @@ export interface VehicleSalesByBrand {
   brand: string;
   sales: number;
 }
+
+export interface TopSeller {
+  name: string;
+  sales: number;
+}
+
+export interface FinancingByBank {
+  bank: string;
+  count: number;
+}

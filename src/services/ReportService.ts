@@ -1,4 +1,4 @@
-import { ReportSummary, SalesByMonth, VehicleSalesByBrand } from '@/types';
+import { ReportSummary, SalesByMonth, VehicleSalesByBrand, TopSeller, FinancingByBank } from '@/types';
 
 const mockReportSummary: ReportSummary = {
   totalSales: 1856400,
@@ -30,6 +30,22 @@ const mockVehicleSalesByBrand: VehicleSalesByBrand[] = [
   { brand: 'Ford', sales: 20 },
 ];
 
+const mockTopSellers: TopSeller[] = [
+  { name: 'Ana Silva', sales: 38 },
+  { name: 'Carlos Mendes', sales: 32 },
+  { name: 'Júlia Santos', sales: 28 },
+  { name: 'Rafael Oliveira', sales: 24 },
+  { name: 'Bianca Costa', sales: 18 },
+];
+
+const mockFinancingByBank: FinancingByBank[] = [
+  { bank: 'Banco do Brasil', count: 12 },
+  { bank: 'Itaú', count: 10 },
+  { bank: 'Santander', count: 8 },
+  { bank: 'Bradesco', count: 5 },
+  { bank: 'Outros', count: 3 },
+];
+
 const fetchReportSummary = async (): Promise<ReportSummary> => {
   await new Promise(resolve => setTimeout(resolve, 500));
   return mockReportSummary;
@@ -45,8 +61,20 @@ const fetchVehicleSalesByBrand = async (): Promise<VehicleSalesByBrand[]> => {
   return mockVehicleSalesByBrand;
 };
 
+const fetchTopSellers = async (): Promise<TopSeller[]> => {
+  await new Promise(resolve => setTimeout(resolve, 500));
+  return mockTopSellers;
+};
+
+const fetchFinancingByBank = async (): Promise<FinancingByBank[]> => {
+  await new Promise(resolve => setTimeout(resolve, 500));
+  return mockFinancingByBank;
+};
+
 export const ReportService = {
   fetchReportSummary,
   fetchSalesByMonth,
   fetchVehicleSalesByBrand,
+  fetchTopSellers,
+  fetchFinancingByBank,
 };

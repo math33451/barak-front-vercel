@@ -24,6 +24,8 @@ export default function Relatorios() {
     summary,
     salesByMonth,
     vehicleSalesByBrand,
+    topSellers, // New
+    financingByBank, // New
     // Simulation states
     clientes,
     taxaConversao,
@@ -268,6 +270,50 @@ export default function Relatorios() {
             label="Meta de Faturamento"
             value={`R$ ${(200 * ticketMedio).toLocaleString("pt-BR")}`}
           />
+        </section>
+
+        {/* Top vendedores e Distribuição de marcas */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-100">
+            <h3 className="text-base font-bold mb-3 text-[color:var(--heading)]">
+              Top 5 Vendedores
+            </h3>
+            <ol className="space-y-1">
+              {topSellers.map((v, i) => (
+                <li key={v.name} className="flex items-center gap-2">
+                  <span className="w-5 h-5 flex items-center justify-center rounded-full bg-sky-100 text-sky-700 font-bold text-xs">
+                    {i + 1}
+                  </span>
+                  <span className="font-medium text-[color:var(--heading)] text-sm">
+                    {v.name}
+                  </span>
+                  <span className="ml-auto text-[color:var(--muted)] text-xs">
+                    {v.sales} vendas
+                  </span>
+                </li>
+              ))}
+            </ol>
+          </div>
+          <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-100">
+            <h3 className="text-base font-bold mb-3 text-[color:var(--heading)]">
+              Financiamentos por Banco
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {financingByBank.map((f) => (
+                <div key={f.bank} className="flex flex-col items-center w-20">
+                  <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold text-base mb-1">
+                    {f.bank[0]}
+                  </div>
+                  <span className="font-medium text-[color:var(--heading)] text-xs">
+                    {f.bank}
+                  </span>
+                  <span className="text-[10px] text-[color:var(--muted)]">
+                    {f.count} contratos
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
         </section>
 
         {/* Gráficos */}

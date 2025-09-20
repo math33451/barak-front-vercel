@@ -25,13 +25,13 @@ To maintain a clear separation of concerns and ensure consistency across the pro
 
 1.  **Models (`src/services`):**
     *   **Purpose:** Handle all data-related operations (fetching, sending, transforming raw data).
-    *   **Structure:** Create a dedicated service file for each major domain or feature (e.g., `src/services/DashboardService.ts`, `src/services/VehicleService.ts`).
+    *   **Structure:** Create a dedicated service file for each major domain or feature (e.g., `src/services/DashboardService.ts`, `src/services/VehiclePageService.ts`, `src/services/AuthService.ts`, etc.).
     *   **Content:** Export functions that interact with APIs, databases, or other data sources. These functions should return raw data or data transformed into application-specific types (defined in `src/types`).
     *   **No UI Logic:** Services should be pure and contain no React-specific code or UI logic.
 
 2.  **ViewModels (`src/viewmodels`):**
     *   **Purpose:** Provide data and methods to the Views, abstracting away the complexity of the Models and managing view-specific state.
-    *   **Structure:** Implement ViewModels as custom React hooks (e.g., `src/viewmodels/useDashboardViewModel.ts`, `src/viewmodels/useVehicleListViewModel.ts`).
+    *   **Structure:** Implement ViewModels as custom React hooks (e.g., `src/viewmodels/useDashboardViewModel.ts`, `src/viewmodels/useVehiclePageViewModel.ts`, `src/viewmodels/useLoginViewModel.ts`, etc.).
     *   **Content:**
         *   Import and utilize functions from the `src/services` (Models).
         *   Manage local state using `useState`, `useReducer`, etc.
@@ -52,7 +52,7 @@ To maintain a clear separation of concerns and ensure consistency across the pro
 
 4.  **Types (`src/types`):**
     *   **Purpose:** Centralize all TypeScript interface and type definitions used across Models, ViewModels, and Views.
-    *   **Structure:** A single `src/types/index.ts` file or subdirectories for complex type hierarchies (e.g., `src/types/dashboard/index.ts`).
+    *   **Structure:** A single `src/types/index.ts` file is used for all common types. For very complex type hierarchies, subdirectories could be considered.
 
 ## Navigation
 
@@ -64,32 +64,99 @@ Navigation in this project is handled by Next.js's file-based routing system, wh
 
 ## File Structure
 
-*   **`src/app/`**: The core of the application's routing and pages. Each subdirectory is a route, as described in the Navigation section.
-    *   `bancos` (banks)
-    *   `clientes` (customers)
-    *   `configuracoes` (settings)
-    *   `dashboard`
-    *   `despesas` (expenses)
-    *   `financiamento` (financing)
-    *   `login`
-    *   `relatorios` (reports)
-    *   `veiculos` (vehicles)
-    *   `vendas` (sales)
-*   **`src/components/`**: Contains reusable React components that form the Views.
-    *   `dashboard`, `layout`, `ui`: Subdirectories for organizing components by feature or type.
-*   **`src/services/`**: Contains the Model layer, responsible for data operations.
-*   **`src/viewmodels/`**: Contains the ViewModel layer, implementing presentation logic as custom hooks.
-*   **`src/types/`**: Centralized TypeScript type definitions.
+*   **`src/`**: The main application source directory.
+    *   **`app/`**: Contains the application's pages and layouts, defining the routing structure.
+        *   `bancos/page.tsx`
+        *   `clientes/page.tsx`
+        *   `configuracoes/page.tsx`
+        *   `dashboard/layout.tsx`
+        *   `dashboard/page.tsx`
+        *   `despesas/page.tsx`
+        *   `financiamento/page.tsx`
+        *   `login/page.tsx`
+        *   `relatorios/page.tsx`
+        *   `veiculos/page.tsx`
+        *   `vendas/page.tsx`
+        *   `favicon.ico`
+        *   `globals.css`
+        *   `layout.tsx`
+        *   `page.tsx` (Home page)
+    *   **`components/`**: Houses reusable React components.
+        *   **`dashboard/`**: Components specific to the dashboard.
+            *   `PerformanceChart.tsx`
+            *   `RecentVehiclesTable.tsx`
+            *   `SalesChart.tsx`
+            *   `StatCard.tsx`
+            *   `VehicleStockChart.tsx`
+        *   **`layout/`**: Layout-related components.
+            *   `DashboardLayout.tsx`
+            *   `Header.tsx`
+            *   `Sidebar.tsx`
+        *   **`ui/`**: Generic UI components.
+            *   `AppointmentsTable.tsx`
+            *   `BrandDistributionChart.tsx`
+            *   `Card.tsx`
+            *   `ChartContainer.tsx`
+            *   `DataTable.tsx`
+            *   `StatusBadge.tsx`
+    *   **`contexts/`**: React Context API providers.
+        *   `AuthContext.tsx`
+    *   **`services/`**: The Model layer, containing data fetching and business logic.
+        *   `AuthService.ts`
+        *   `BankService.ts`
+        *   `ClientService.ts`
+        *   `DashboardService.ts`
+        *   `ExpenseService.ts`
+        *   `FinancingService.ts`
+        *   `ReportService.ts`
+        *   `SalePageService.ts`
+        *   `SettingsService.ts`
+        *   `VehiclePageService.ts`
+    *   **`viewmodels/`**: The ViewModel layer, implementing presentation logic as custom React hooks.
+        *   `useBankViewModel.ts`
+        *   `useClientViewModel.ts`
+        *   `useDashboardViewModel.ts`
+        *   `useExpenseViewModel.ts`
+        *   `useFinancingViewModel.ts`
+        *   `useLoginViewModel.ts`
+        *   `useReportViewModel.ts`
+        *   `useSalePageViewModel.ts`
+        *   `useSettingsViewModel.ts`
+        *   `useVehiclePageViewModel.ts`
+    *   **`types/`**: Centralized TypeScript type definitions.
+        *   `index.ts`
 *   **`public/`**: Stores static assets like images and icons.
 *   **Configuration Files:** Standard Next.js and TypeScript project configuration files.
+    *   `eslint.config.mjs`
+    *   `next.config.ts`
+    *   `package-lock.json`
+    *   `package.json`
+    *   `postcss.config.mjs`
+    *   `README.md`
+    *   `tsconfig.json`
 
 ## Dependencies & Scripts
 
-*   **Main Dependencies:** `next`, `react`, `react-dom`, `chart.js`, `react-chartjs-2`
-*   **Development Dependencies:** `typescript`, `eslint`, `tailwindcss`
+*   **Main Dependencies:**
+    *   `chart.js`: Charting library.
+    *   `lucide-react`: Icon library.
+    *   `next`: The React framework for production.
+    *   `react`: The JavaScript library for building user interfaces.
+    *   `react-chartjs-2`: React wrapper for Chart.js.
+    *   `react-dom`: The package for working with the DOM in React.
+*   **Development Dependencies:**
+    *   `@eslint/eslintrc`: ESLint configuration utilities.
+    *   `@tailwindcss/postcss`: PostCSS plugin for Tailwind CSS.
+    *   `@types/node`: TypeScript type definitions for Node.js.
+    *   `@types/react`: TypeScript type definitions for React.
+    *   `@types/react-dom`: TypeScript type definitions for React DOM.
+    *   `eslint`: For code linting.
+    *   `eslint-config-next`: ESLint configuration for Next.js.
+    *   `tailwindcss`: For CSS styling.
+    *   `typescript`: The TypeScript language.
 *   **Scripts:**
-    *   `npm run dev`: Starts the development server.
-    *   `npm run build`: Creates a production build.
+    *   `npm run dev`: Starts the development server with Turbopack.
+    *   `npm run build`: Creates a production build of the application.
     *   `npm run start`: Starts the production server.
     *   `npm run lint`: Lints the codebase for errors.
 

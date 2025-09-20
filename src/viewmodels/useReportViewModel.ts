@@ -1,6 +1,6 @@
-import { useState, useEffect, useMemo } from 'react'; // Import useMemo
+import { useState, useEffect, useMemo } from 'react';
 import { ReportService } from '@/services/ReportService';
-import { ReportSummary, SalesByMonth, VehicleSalesByBrand } from '@/types';
+import { ReportSummary, SalesByMonth, VehicleSalesByBrand, TopSeller, FinancingByBank } from '@/types';
 
 interface ReportViewModel {
   isLoading: boolean;
@@ -8,6 +8,8 @@ interface ReportViewModel {
   summary: ReportSummary | null;
   salesByMonth: SalesByMonth[];
   vehicleSalesByBrand: VehicleSalesByBrand[];
+  topSellers: TopSeller[]; // New
+  financingByBank: FinancingByBank[]; // New
 
   // Simulation states
   clientes: number;
@@ -39,6 +41,8 @@ export const useReportViewModel = (): ReportViewModel => {
   const [summary, setSummary] = useState<ReportSummary | null>(null);
   const [salesByMonth, setSalesByMonth] = useState<SalesByMonth[]>([]);
   const [vehicleSalesByBrand, setVehicleSalesByBrand] = useState<VehicleSalesByBrand[]>([]);
+  const [topSellers, setTopSellers] = useState<TopSeller[]>([]); // New
+  const [financingByBank, setFinancingByBank] = useState<FinancingByBank[]>([]); // New
 
   // Simulation states
   const [clientes, setClientes] = useState(120);
@@ -53,10 +57,14 @@ export const useReportViewModel = (): ReportViewModel => {
         const fetchedSummary = await ReportService.fetchReportSummary();
         const fetchedSalesByMonth = await ReportService.fetchSalesByMonth();
         const fetchedVehicleSalesByBrand = await ReportService.fetchVehicleSalesByBrand();
+        const fetchedTopSellers = await ReportService.fetchTopSellers(); // New
+        const fetchedFinancingByBank = await ReportService.fetchFinancingByBank(); // New
 
         setSummary(fetchedSummary);
         setSalesByMonth(fetchedSalesByMonth);
         setVehicleSalesByBrand(fetchedVehicleSalesByBrand);
+        setTopSellers(fetchedTopSellers);
+        setFinancingByBank(fetchedFinancingByBank);
 
         // Initialize simulation ticketMedio with fetched summary's value if available
         if (fetchedSummary) {
@@ -91,6 +99,8 @@ export const useReportViewModel = (): ReportViewModel => {
     summary,
     salesByMonth,
     vehicleSalesByBrand,
+    topSellers,
+    financingByBank,
 
     // Simulation states
     clientes,
