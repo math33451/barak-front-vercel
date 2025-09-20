@@ -1,36 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
 import { Car } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useLoginViewModel } from '@/viewmodels/useLoginViewModel';
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      // Simulate network request
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log('Login attempt with:', { email });
-
-      // Set authentication flag in localStorage
-      localStorage.setItem('isAuthenticated', 'true');
-
-      // Redirect after successful login
-      router.push('/dashboard');
-    } catch (error) {
-      console.error('Login failed', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { credentials, isLoading, error, handleChange, handleSubmit } = useLoginViewModel();
 
   return (
     <div
@@ -66,20 +41,20 @@ export default function Login() {
           <div className="space-y-4">
             <div>
               <label
-                htmlFor="email"
+                htmlFor="username" // Changed from email to username
                 className="block text-sm font-medium mb-1"
                 style={{ color: 'var(--foreground)' }}
               >
                 E-mail
               </label>
               <input
-                id="email"
-                name="email"
+                id="username" // Changed from email to username
+                name="username" // Changed from email to username
                 type="email"
                 autoComplete="email"
                 required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={credentials.username}
+                onChange={handleChange}
                 className="input w-full text-sm"
                 placeholder="seu.email@barak.com.br"
               />
@@ -107,13 +82,17 @@ export default function Login() {
                 type="password"
                 autoComplete="current-password"
                 required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={credentials.password}
+                onChange={handleChange}
                 className="input w-full text-sm"
                 placeholder="••••••••"
               />
             </div>
           </div>
+
+          {error && (
+            <p className="text-red-500 text-sm text-center">{error}</p>
+          )}
 
           <div>
             <button
