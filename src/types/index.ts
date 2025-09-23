@@ -110,3 +110,25 @@ export interface FinancingByBank {
   bank: string;
   count: number;
 }
+
+export interface LoginDTO {
+  email: string;
+  password: string;
+}
+
+export interface RegisterDTO {
+  name: string;
+  email: string;
+  password: string;
+  // Add other fields if present in your Java RegisterDTO
+}
+
+export interface AuthResponse {
+  token: string;
+}
+
+export interface UnidadeEmpresaDTO {
+  id: number;
+  name: string;
+  // Add other fields if present in your Java UnidadeEmpresaDTO
+}

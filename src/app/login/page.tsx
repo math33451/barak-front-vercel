@@ -41,19 +41,19 @@ export default function Login() {
           <div className="space-y-4">
             <div>
               <label
-                htmlFor="username" // Changed from email to username
+                htmlFor="email"
                 className="block text-sm font-medium mb-1"
                 style={{ color: 'var(--foreground)' }}
               >
                 E-mail
               </label>
               <input
-                id="username" // Changed from email to username
-                name="username" // Changed from email to username
+                id="email"
+                name="email"
                 type="email"
                 autoComplete="email"
                 required
-                value={credentials.username}
+                value={credentials.email}
                 onChange={handleChange}
                 className="input w-full text-sm"
                 placeholder="seu.email@barak.com.br"

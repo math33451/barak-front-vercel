@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AuthService } from '@/services/AuthService';
 import { useAuth } from '@/contexts/AuthContext';
-import { UserCredentials } from '@/types';
+import { LoginDTO } from '@/types';
 
 interface LoginViewModel {
-  credentials: UserCredentials;
+  credentials: LoginDTO;
   isLoading: boolean;
   error: string | null;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -13,8 +13,8 @@ interface LoginViewModel {
 }
 
 export const useLoginViewModel = (): LoginViewModel => {
-  const [credentials, setCredentials] = useState<UserCredentials>({
-    username: '',
+  const [credentials, setCredentials] = useState<LoginDTO>({
+    email: '',
     password: '',
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -32,15 +32,15 @@ export const useLoginViewModel = (): LoginViewModel => {
     setError(null);
 
     try {
-      const success = await AuthService.login(credentials);
-      if (success) {
-        login(); // Update AuthContext
+      const token = await AuthService.login(credentials);
+      if (token) {
+        login(token); // Update AuthContext with the token
         router.push('/dashboard');
       } else {
-        setError('Invalid username or password');
+        setError('Invalid email or password');
       }
-    } catch (err) {
-      setError('An unexpected error occurred');
+    } catch (err: any) {
+      setError(err.message || 'An unexpected error occurred');
       console.error(err);
     } finally {
       setIsLoading(false);

@@ -1,17 +1,23 @@
-import { UserCredentials } from '@/types';
+import { LoginDTO, RegisterDTO, AuthResponse, UnidadeEmpresaDTO } from '@/types';
+import { httpClient } from '@/infra/httpClient';
 
-const mockUsers = [
-  { username: 'user@example.com', password: 'password' },
-];
+const login = async (credentials: LoginDTO): Promise<string> => {
+  const response = await httpClient.post<AuthResponse>('/auth/login', credentials);
+  return response.token;
+};
 
-const login = async (credentials: UserCredentials): Promise<boolean> => {
-  await new Promise(resolve => setTimeout(resolve, 500));
-  const user = mockUsers.find(
-    (u) => u.username === credentials.username && u.password === credentials.password
-  );
-  return !!user;
+const register = async (userData: RegisterDTO): Promise<string> => {
+  const response = await httpClient.post<string>('/auth/register', userData);
+  return response;
+};
+
+const getUserUnits = async (idUser: number): Promise<UnidadeEmpresaDTO[]> => {
+  const response = await httpClient.get<UnidadeEmpresaDTO[]>(`/user-unidades/${idUser}`);
+  return response;
 };
 
 export const AuthService = {
   login,
+  register,
+  getUserUnits,
 };
