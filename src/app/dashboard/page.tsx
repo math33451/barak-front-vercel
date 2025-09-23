@@ -1,30 +1,10 @@
 "use client";
 
-import { Car, ShoppingBag, Users, Bike, TrendingUp } from "lucide-react";
+import { Car, ShoppingBag, Users, Bike, TrendingUp, BarChart2, PieChart, GanttChartSquare, CalendarClock } from "lucide-react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import StatCard from "@/components/dashboard/StatCard";
-import SalesChart from "@/components/dashboard/SalesChart";
-import VehicleStockChart from "@/components/dashboard/VehicleStockChart";
-import PerformanceChart from "@/components/dashboard/PerformanceChart";
-import BrandDistributionChart from "@/components/ui/BrandDistributionChart";
-import RecentVehiclesTable from "@/components/dashboard/RecentVehiclesTable";
-import AppointmentsTable from "@/components/ui/AppointmentsTable";
+import EmptyState from "@/components/ui/EmptyState";
 import { useDashboardViewModel } from "@/viewmodels/useDashboardViewModel";
-import { useEffect } from "react"; // Import useEffect
-
-// Chart.js registration
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement,
-} from "chart.js";
 
 const ICONS: { [key: string]: React.ReactNode } = {
     ShoppingBag: <ShoppingBag className="h-6 w-6 text-[color:var(--primary)]" />,
@@ -35,28 +15,10 @@ const ICONS: { [key: string]: React.ReactNode } = {
 };
 
 export default function Dashboard() {
-  useEffect(() => { // Move Chart.js registration inside useEffect
-    ChartJS.register(
-      CategoryScale,
-      LinearScale,
-      PointElement,
-      LineElement,
-      BarElement,
-      Title,
-      Tooltip,
-      Legend,
-      ArcElement
-    );
-  }, []); // Run only once on mount
-
   const { 
     isLoading, 
     error, 
     statCards, 
-    sales, 
-    recentVehicles, 
-    appointments, 
-    brandDistribution 
   } = useDashboardViewModel();
 
   if (isLoading) {
@@ -88,21 +50,16 @@ export default function Dashboard() {
 
       {/* Main Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <SalesChart salesData={sales} />
-        <VehicleStockChart stockData={brandDistribution} />
-      </div>
-
-      {/* Secondary Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <PerformanceChart />
-        <BrandDistributionChart brandData={brandDistribution} />
+        <EmptyState icon={BarChart2} title="Gráfico de Vendas em Breve" message="O gráfico de performance de vendas estará disponível em futuras atualizações." />
+        <EmptyState icon={PieChart} title="Gráfico de Estoque em Breve" message="O gráfico de distribuição de veículos em estoque estará disponível em breve." />
       </div>
 
       {/* Tables */}
       <div className="space-y-6">
-        <RecentVehiclesTable vehicles={recentVehicles} />
-        <AppointmentsTable appointments={appointments} />
+        <EmptyState icon={GanttChartSquare} title="Veículos Recentes em Breve" message="A tabela com os veículos adicionados recentemente estará disponível em breve." />
+        <EmptyState icon={CalendarClock} title="Agendamentos em Breve" message="A tabela com os próximos agendamentos estará disponível em breve." />
       </div>
     </DashboardLayout>
   );
 }
+

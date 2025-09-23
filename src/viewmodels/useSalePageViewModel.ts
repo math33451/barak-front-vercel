@@ -1,24 +1,25 @@
 import { useState, useEffect } from 'react';
-import { SalePageService } from '@/services/SalePageService';
-import { Sale } from '@/types';
+import { ProposalService } from '@/services/ProposalService';
+import { Proposal } from '@/types';
 
 interface SalePageViewModel {
   isLoading: boolean;
   error: Error | null;
-  sales: Sale[];
+  sales: Proposal[];
 }
 
 export const useSalePageViewModel = (): SalePageViewModel => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
-  const [sales, setSales] = useState<Sale[]>([]);
+  const [sales, setSales] = useState<Proposal[]>([]);
 
   useEffect(() => {
     const loadSales = async () => {
       try {
         setIsLoading(true);
-        const fetchedSales = await SalePageService.fetchSales();
-        setSales(fetchedSales);
+        const allProposals = await ProposalService.fetchProposals();
+        const approvedSales = allProposals.filter(p => p.status === 'FINALIZADA');
+        setSales(approvedSales);
       } catch (err) {
         setError(err as Error);
       } finally {

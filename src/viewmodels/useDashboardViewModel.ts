@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import { DashboardService } from '@/services/DashboardService';
+import { useState } from 'react';
 import { StatCardData, Vehicle, Sale, Appointment, BrandDistribution } from '@/types';
 
 interface DashboardViewModel {
@@ -12,34 +11,24 @@ interface DashboardViewModel {
   brandDistribution: BrandDistribution[];
 }
 
+const staticStatCards: StatCardData[] = [
+  { title: 'Vendas Totais', value: 'R$ 0,00', icon: 'ShoppingBag', footer: 'Dados de vendas não disponíveis' },
+  { title: 'Veículos em Estoque', value: '0', icon: 'Car', footer: 'Dados de estoque não disponíveis' },
+  { title: 'Novos Clientes', value: '0', icon: 'Users', footer: 'Dados de clientes não disponíveis' },
+  { title: 'Motos em Estoque', value: '0', icon: 'Bike', footer: 'Dados de estoque não disponíveis' },
+];
+
 export const useDashboardViewModel = (): DashboardViewModel => {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
-  const [data, setData] = useState<Omit<DashboardViewModel, 'isLoading' | 'error'> | null>(null);
-
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        setIsLoading(true);
-        const dashboardData = await DashboardService.fetchDashboardData();
-        setData(dashboardData);
-      } catch (err) {
-        setError(err as Error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadData();
-  }, []);
 
   return {
     isLoading,
     error,
-    statCards: data?.statCards || [],
-    sales: data?.sales || [],
-    recentVehicles: data?.recentVehicles || [],
-    appointments: data?.appointments || [],
-    brandDistribution: data?.brandDistribution || [],
+    statCards: staticStatCards,
+    sales: [],
+    recentVehicles: [],
+    appointments: [],
+    brandDistribution: [],
   };
 };
