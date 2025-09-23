@@ -41,10 +41,53 @@ export interface BrandDistribution {
 }
 
 export interface Bank {
-  [key: string]: unknown; // Added index signature
-  id: string;
+  id?: number;
   name: string;
-  code: string;
+  balance: number;
+}
+
+export interface ReportSummary {
+  totalSales: number;
+  vehiclesSold: number;
+  newClients: number;
+  financingContracts: number;
+}
+
+export interface SalesByMonth {
+  month: string;
+  sales: number;
+}
+
+export interface VehicleSalesByBrand {
+  brand: string;
+  sales: number;
+}
+
+export interface TopSeller {
+  name: string;
+  sales: number;
+}
+
+export interface FinancingByBank {
+  bank: string;
+  count: number;
+}
+
+export interface Retorno {
+  idRetorno?: number;
+  retorno1: number;
+  retorno2: number;
+  retorno3: number;
+  retorno4: number;
+  retorno5: number;
+}
+
+export interface Client {
+  id?: number;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
 }
 
 export interface UserCredentials {

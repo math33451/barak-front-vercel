@@ -8,7 +8,7 @@ import {
   TrendingUp,
   Settings,
   X,
-  FileMinus2,
+  Repeat,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -24,7 +24,7 @@ const NavItem = ({ href, icon, label, isActive = false }: NavItemProps) => (
     href={href}
     className={`flex items-center gap-3 p-3 rounded-md ${
       isActive
-        ? "bg-[color:var(--primary)] text-white" // Changed bg-opacity-10 and text-[color:var(--primary)]
+        ? "bg-[color:var(--primary)] text-white"
         : "hover:bg-gray-100 text-[color:var(--foreground)]"
     }`}
   >
@@ -49,11 +49,6 @@ export default function Sidebar({
       href: "/dashboard",
       label: "Dashboard",
       icon: <BarChart3 className="h-5 w-5" />,
-    },
-    {
-      href: "/veiculos",
-      label: "Veículos",
-      icon: <Car className="h-5 w-5" />,
     },
     {
       href: "/vendas",
@@ -81,14 +76,14 @@ export default function Sidebar({
       icon: <Settings className="h-5 w-5" />,
     },
     {
+      href: "/retorno",
+      label: "Retorno",
+      icon: <Repeat className="h-5 w-5" />,
+    },
+    {
       href: "/bancos",
       label: "Bancos",
       icon: <CreditCard className="h-5 w-5" />,
-    },
-    {
-      href: "/despesas",
-      label: "Despesas",
-      icon: <FileMinus2 className="h-5 w-5" />,
     },
   ];
 
