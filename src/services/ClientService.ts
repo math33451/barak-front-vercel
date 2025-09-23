@@ -1,16 +1,22 @@
 import { Client } from '@/types';
-
-const mockClients: Client[] = [
-  { id: '1', name: 'João Silva', email: 'joao.silva@example.com', phone: '(11) 98765-4321' },
-  { id: '2', name: 'Maria Souza', email: 'maria.souza@example.com', phone: '(11) 91234-5678' },
-  { id: '3', name: 'Carlos Pereira', email: 'carlos.pereira@example.com', phone: '(11) 99876-5432' },
-];
+import { httpClient } from '@/infra/httpClient';
 
 const fetchClients = async (): Promise<Client[]> => {
-  await new Promise(resolve => setTimeout(resolve, 500));
-  return mockClients;
+  const response = await httpClient.get<Client[]>('/rest/cliente/listar');
+  return response;
+};
+
+const saveClient = async (client: Omit<Client, 'id'>): Promise<Client> => {
+  const response = await httpClient.post<Client>('/rest/cliente/salvar', client);
+  return response;
+};
+
+const deleteClient = async (clientId: string): Promise<void> => {
+  await httpClient.delete<void>(`/rest/cliente/delete/${clientId}`);
 };
 
 export const ClientService = {
   fetchClients,
+  saveClient,
+  deleteClient,
 };
