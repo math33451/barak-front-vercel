@@ -132,3 +132,15 @@ export interface UnidadeEmpresaDTO {
   name: string;
   // Add other fields if present in your Java UnidadeEmpresaDTO
 }
+
+export interface Employee {
+  [key: string]: unknown;
+  id: string;
+  name: string;
+  cpf: string;
+  email: string;
+  phone: string;
+  isActive: boolean;
+  isManager: boolean;
+  unit: UnidadeEmpresaDTO;
+}
