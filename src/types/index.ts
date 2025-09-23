@@ -144,3 +144,20 @@ export interface Employee {
   isManager: boolean;
   unit: UnidadeEmpresaDTO;
 }
+
+export interface Proposal {
+  [key: string]: unknown;
+  id: string;
+  value: number;
+  ilaValue: number;
+  returnValue: number;
+  bankReturnMultiplier: number;
+  selectedReturn: number;
+  isFinanced: 'SIM' | 'NAO';
+  status: 'PENDENTE' | 'FINALIZADA' | 'CANCELADA';
+  updatedAt: string; // Assuming ISO date string
+  sellerId: string;
+  bankId?: string;
+  client: Client;
+  vehicle: Vehicle;
+}

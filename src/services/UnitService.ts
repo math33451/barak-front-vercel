@@ -6,6 +6,17 @@ const fetchUnits = async (): Promise<UnidadeEmpresaDTO[]> => {
   return response;
 };
 
+const saveUnit = async (unit: Omit<UnidadeEmpresaDTO, 'id'>): Promise<UnidadeEmpresaDTO> => {
+  const response = await httpClient.post<UnidadeEmpresaDTO>('/rest/unidade', unit);
+  return response;
+};
+
+const deleteUnit = async (unitId: number): Promise<void> => {
+  await httpClient.delete<void>(`/rest/unidade/${unitId}`);
+};
+
 export const UnitService = {
   fetchUnits,
+  saveUnit,
+  deleteUnit,
 };
