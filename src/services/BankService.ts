@@ -1,17 +1,22 @@
 import { Bank } from '@/types';
-
-const mockBanks: Bank[] = [
-  { id: '1', name: 'Banco do Brasil', code: '001' },
-  { id: '2', name: 'Itaú Unibanco', code: '341' },
-  { id: '3', name: 'Bradesco', code: '237' },
-  { id: '4', name: 'Santander', code: '033' },
-];
+import { httpClient } from '@/infra/httpClient';
 
 const fetchBanks = async (): Promise<Bank[]> => {
-  await new Promise(resolve => setTimeout(resolve, 500));
-  return mockBanks;
+  const response = await httpClient.get<Bank[]>('/rest/banco/listar');
+  return response;
+};
+
+const saveBank = async (bank: Omit<Bank, 'id'>): Promise<Bank> => {
+  const response = await httpClient.post<Bank>('/rest/banco/salvar', bank);
+  return response;
+};
+
+const deleteBank = async (bankId: string): Promise<void> => {
+  await httpClient.delete<void>(`/rest/banco/delete/${bankId}`);
 };
 
 export const BankService = {
   fetchBanks,
+  saveBank,
+  deleteBank,
 };
