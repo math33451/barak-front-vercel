@@ -52,12 +52,17 @@ export interface UserCredentials {
   password: string;
 }
 
-export interface FinancingOption {
-  [key: string]: unknown; // Added index signature
+export interface Agreement {
+  [key: string]: unknown;
   id: string;
-  bank: string;
-  interestRate: number;
-  maxTerm: number;
+  unitId: string;
+  bankId: string;
+  bankName: string;
+  return1: number;
+  return2: number;
+  return3: number;
+  return4: number;
+  return5: number;
 }
 
 export interface Expense {

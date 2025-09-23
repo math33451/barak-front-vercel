@@ -1,16 +1,22 @@
-import { FinancingOption } from '@/types';
+import { Agreement } from '@/types';
+import { httpClient } from '@/infra/httpClient';
 
-const mockFinancingOptions: FinancingOption[] = [
-  { id: '1', bank: 'Banco do Brasil', interestRate: 0.08, maxTerm: 60 },
-  { id: '2', bank: 'Itaú Unibanco', interestRate: 0.075, maxTerm: 72 },
-  { id: '3', bank: 'Bradesco', interestRate: 0.082, maxTerm: 48 },
-];
+const fetchAgreements = async (): Promise<Agreement[]> => {
+  const response = await httpClient.get<Agreement[]>('/rest/acordo/listar');
+  return response;
+};
 
-const fetchFinancingOptions = async (): Promise<FinancingOption[]> => {
-  await new Promise(resolve => setTimeout(resolve, 500));
-  return mockFinancingOptions;
+const saveAgreement = async (agreement: Omit<Agreement, 'id'>): Promise<Agreement> => {
+  const response = await httpClient.post<Agreement>('/rest/acordo/salvar', agreement);
+  return response;
+};
+
+const deleteAgreement = async (agreementId: string): Promise<void> => {
+  await httpClient.delete<void>(`/rest/acordo/delete/${agreementId}`);
 };
 
 export const FinancingService = {
-  fetchFinancingOptions,
+  fetchAgreements,
+  saveAgreement,
+  deleteAgreement,
 };
