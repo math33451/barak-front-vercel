@@ -3,8 +3,21 @@
 // Reports
 export * from "./useReports";
 
-// Proposals & Sales
+// Hooks para relatórios e dashboard
+export * from "./useReports";
+
+// Hooks para propostas e vendas
 export * from "./useProposalsAndSales";
+
+// Hooks para entidades (clientes, bancos, funcionários, etc)
+export * from "./useEntities";
+
+// Hooks para outros serviços (configurações, retorno)
+export * from "./useOtherServices";
+
+// Hooks customizados
+export * from "./useToast";
+export * from "./useIntegrationTests";
 
 // Entities (Clients, Banks, Employees)
 export * from "./useEntities";

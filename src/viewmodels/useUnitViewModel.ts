@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
-import { UnitService } from '@/services/UnitService';
-import { UnidadeEmpresaDTO } from '@/types';
+import { useState } from "react";
+import { UnidadeEmpresaDTO } from "@/types";
+import { useUnits, useCreateUnit, useDeleteUnit } from "@/hooks/useEntities";
 
 interface UnitViewModel {
   isLoading: boolean;
@@ -11,33 +11,20 @@ interface UnitViewModel {
   editingUnit: Partial<UnidadeEmpresaDTO> | null;
   openModal: (unit?: Partial<UnidadeEmpresaDTO>) => void;
   closeModal: () => void;
-  handleSaveUnit: (unit: Omit<UnidadeEmpresaDTO, 'id'>) => Promise<void>;
+  handleSaveUnit: (unit: Omit<UnidadeEmpresaDTO, "id">) => Promise<void>;
   handleDeleteUnit: (unitId: number) => Promise<void>;
 }
 
 export const useUnitViewModel = (): UnitViewModel => {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<Error | null>(null);
-  const [units, setUnits] = useState<UnidadeEmpresaDTO[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [editingUnit, setEditingUnit] = useState<Partial<UnidadeEmpresaDTO> | null>(null);
+  const [editingUnit, setEditingUnit] =
+    useState<Partial<UnidadeEmpresaDTO> | null>(null);
 
-  const loadUnits = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const fetchedUnits = await UnitService.fetchUnits();
-      setUnits(fetchedUnits);
-    } catch (err) {
-      setError(err as Error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  // React Query hooks
+  const { data: units = [], isLoading, error } = useUnits();
 
-  useEffect(() => {
-    loadUnits();
-  }, [loadUnits]);
+  const createUnitMutation = useCreateUnit();
+  const deleteUnitMutation = useDeleteUnit();
 
   const openModal = (unit: Partial<UnidadeEmpresaDTO> | null = null) => {
     setEditingUnit(unit);
@@ -49,34 +36,31 @@ export const useUnitViewModel = (): UnitViewModel => {
     setIsModalOpen(false);
   };
 
-  const handleSaveUnit = async (unit: Omit<UnidadeEmpresaDTO, 'id'>) => {
-    setIsSubmitting(true);
+  const handleSaveUnit = async (unit: Omit<UnidadeEmpresaDTO, "id">) => {
     try {
-      await UnitService.saveUnit(unit);
-      await loadUnits();
+      await createUnitMutation.mutateAsync(unit);
       closeModal();
     } catch (err) {
-      setError(err as Error);
-    } finally {
-      setIsSubmitting(false);
+      console.error("Erro ao salvar unidade:", err);
+      throw err;
     }
   };
 
   const handleDeleteUnit = async (unitId: number) => {
     try {
-      await UnitService.deleteUnit(unitId);
-      await loadUnits();
+      await deleteUnitMutation.mutateAsync(unitId);
     } catch (err) {
-      setError(err as Error);
+      console.error("Erro ao deletar unidade:", err);
+      throw err;
     }
   };
 
   return {
     isLoading,
-    error,
+    error: error as Error | null,
     units,
     isModalOpen,
-    isSubmitting,
+    isSubmitting: createUnitMutation.isPending || deleteUnitMutation.isPending,
     editingUnit,
     openModal,
     closeModal,

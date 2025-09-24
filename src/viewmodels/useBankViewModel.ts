@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
-import { BankService } from "@/services/BankService";
+import { useState } from "react";
 import { Bank } from "@/types";
+import { useBanks, useCreateBank, useDeleteBank } from "@/hooks/useEntities";
 
 interface BankViewModel {
   isLoading: boolean;
@@ -16,28 +16,14 @@ interface BankViewModel {
 }
 
 export const useBankViewModel = (): BankViewModel => {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<Error | null>(null);
-  const [banks, setBanks] = useState<Bank[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingBank, setEditingBank] = useState<Partial<Bank> | null>(null);
 
-  const loadBanks = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const fetchedBanks = await BankService.fetchBanks();
-      setBanks(fetchedBanks);
-    } catch (err) {
-      setError(err as Error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  // React Query hooks
+  const { data: banks = [], isLoading, error } = useBanks();
 
-  useEffect(() => {
-    loadBanks();
-  }, [loadBanks]);
+  const createBankMutation = useCreateBank();
+  const deleteBankMutation = useDeleteBank();
 
   const openModal = (bank: Partial<Bank> | Bank | null = null) => {
     setEditingBank(bank);
@@ -50,33 +36,30 @@ export const useBankViewModel = (): BankViewModel => {
   };
 
   const handleSaveBank = async (bank: Omit<Bank, "id">) => {
-    setIsSubmitting(true);
     try {
-      await BankService.saveBank(bank);
-      await loadBanks(); // Recarrega a lista
+      await createBankMutation.mutateAsync(bank);
       closeModal();
     } catch (err) {
-      setError(err as Error);
-    } finally {
-      setIsSubmitting(false);
+      console.error("Erro ao salvar banco:", err);
+      throw err;
     }
   };
 
   const handleDeleteBank = async (bankId: string) => {
     try {
-      await BankService.deleteBank(bankId);
-      await loadBanks(); // Recarrega a lista
+      await deleteBankMutation.mutateAsync(bankId);
     } catch (err) {
-      setError(err as Error);
+      console.error("Erro ao deletar banco:", err);
+      throw err;
     }
   };
 
   return {
     isLoading,
-    error,
+    error: error as Error | null,
     banks,
     isModalOpen,
-    isSubmitting,
+    isSubmitting: createBankMutation.isPending || deleteBankMutation.isPending,
     editingBank,
     openModal,
     closeModal,

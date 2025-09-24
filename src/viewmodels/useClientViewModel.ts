@@ -1,6 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
-import { ClientService } from '@/services/ClientService';
-import { Client } from '@/types';
+import { useState } from "react";
+import { Client } from "@/types";
+import {
+  useClients,
+  useCreateClient,
+  useDeleteClient,
+} from "@/hooks/useEntities";
 
 interface ClientViewModel {
   isLoading: boolean;
@@ -11,33 +15,21 @@ interface ClientViewModel {
   editingClient: Partial<Client> | null;
   openModal: (client?: Partial<Client>) => void;
   closeModal: () => void;
-  handleSaveClient: (client: Omit<Client, 'id'>) => Promise<void>;
+  handleSaveClient: (client: Omit<Client, "id">) => Promise<void>;
   handleDeleteClient: (clientId: string) => Promise<void>;
 }
 
 export const useClientViewModel = (): ClientViewModel => {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<Error | null>(null);
-  const [clients, setClients] = useState<Client[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [editingClient, setEditingClient] = useState<Partial<Client> | null>(null);
+  const [editingClient, setEditingClient] = useState<Partial<Client> | null>(
+    null
+  );
 
-  const loadClients = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const fetchedClients = await ClientService.fetchClients();
-      setClients(fetchedClients);
-    } catch (err) {
-      setError(err as Error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  // React Query hooks
+  const { data: clients = [], isLoading, error } = useClients();
 
-  useEffect(() => {
-    loadClients();
-  }, [loadClients]);
+  const createClientMutation = useCreateClient();
+  const deleteClientMutation = useDeleteClient();
 
   const openModal = (client: Partial<Client> | null = null) => {
     setEditingClient(client);
@@ -49,34 +41,32 @@ export const useClientViewModel = (): ClientViewModel => {
     setIsModalOpen(false);
   };
 
-  const handleSaveClient = async (client: Omit<Client, 'id'>) => {
-    setIsSubmitting(true);
+  const handleSaveClient = async (client: Omit<Client, "id">) => {
     try {
-      await ClientService.saveClient(client);
-      await loadClients(); // Recarrega a lista
+      await createClientMutation.mutateAsync(client);
       closeModal();
     } catch (err) {
-      setError(err as Error);
-    } finally {
-      setIsSubmitting(false);
+      console.error("Erro ao salvar cliente:", err);
+      throw err;
     }
   };
 
   const handleDeleteClient = async (clientId: string) => {
     try {
-      await ClientService.deleteClient(clientId);
-      await loadClients(); // Recarrega a lista
+      await deleteClientMutation.mutateAsync(clientId);
     } catch (err) {
-      setError(err as Error);
+      console.error("Erro ao deletar cliente:", err);
+      throw err;
     }
   };
 
   return {
     isLoading,
-    error,
+    error: error as Error | null,
     clients,
     isModalOpen,
-    isSubmitting,
+    isSubmitting:
+      createClientMutation.isPending || deleteClientMutation.isPending,
     editingClient,
     openModal,
     closeModal,

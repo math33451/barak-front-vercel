@@ -1,6 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
-import { EmployeeService } from '@/services/EmployeeService';
-import { Employee } from '@/types';
+import { useState } from "react";
+import { Employee } from "@/types";
+import {
+  useEmployees,
+  useCreateEmployee,
+  useDeleteEmployee,
+} from "@/hooks/useEntities";
 
 interface EmployeeViewModel {
   isLoading: boolean;
@@ -11,33 +15,20 @@ interface EmployeeViewModel {
   editingEmployee: Partial<Employee> | null;
   openModal: (employee?: Partial<Employee>) => void;
   closeModal: () => void;
-  handleSaveEmployee: (employee: Omit<Employee, 'id'>) => Promise<void>;
+  handleSaveEmployee: (employee: Omit<Employee, "id">) => Promise<void>;
   handleDeleteEmployee: (employeeId: string) => Promise<void>;
 }
 
 export const useEmployeeViewModel = (): EmployeeViewModel => {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<Error | null>(null);
-  const [employees, setEmployees] = useState<Employee[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [editingEmployee, setEditingEmployee] = useState<Partial<Employee> | null>(null);
+  const [editingEmployee, setEditingEmployee] =
+    useState<Partial<Employee> | null>(null);
 
-  const loadEmployees = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const fetchedEmployees = await EmployeeService.fetchEmployees();
-      setEmployees(fetchedEmployees);
-    } catch (err) {
-      setError(err as Error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  // React Query hooks
+  const { data: employees = [], isLoading, error } = useEmployees();
 
-  useEffect(() => {
-    loadEmployees();
-  }, [loadEmployees]);
+  const createEmployeeMutation = useCreateEmployee();
+  const deleteEmployeeMutation = useDeleteEmployee();
 
   const openModal = (employee: Partial<Employee> | null = null) => {
     setEditingEmployee(employee);
@@ -49,34 +40,32 @@ export const useEmployeeViewModel = (): EmployeeViewModel => {
     setIsModalOpen(false);
   };
 
-  const handleSaveEmployee = async (employee: Omit<Employee, 'id'>) => {
-    setIsSubmitting(true);
+  const handleSaveEmployee = async (employee: Omit<Employee, "id">) => {
     try {
-      await EmployeeService.saveEmployee(employee);
-      await loadEmployees(); // Recarrega a lista
+      await createEmployeeMutation.mutateAsync(employee);
       closeModal();
     } catch (err) {
-      setError(err as Error);
-    } finally {
-      setIsSubmitting(false);
+      console.error("Erro ao salvar funcionário:", err);
+      throw err;
     }
   };
 
   const handleDeleteEmployee = async (employeeId: string) => {
     try {
-      await EmployeeService.deleteEmployee(employeeId);
-      await loadEmployees(); // Recarrega a lista
+      await deleteEmployeeMutation.mutateAsync(employeeId);
     } catch (err) {
-      setError(err as Error);
+      console.error("Erro ao deletar funcionário:", err);
+      throw err;
     }
   };
 
   return {
     isLoading,
-    error,
+    error: error as Error | null,
     employees,
     isModalOpen,
-    isSubmitting,
+    isSubmitting:
+      createEmployeeMutation.isPending || deleteEmployeeMutation.isPending,
     editingEmployee,
     openModal,
     closeModal,

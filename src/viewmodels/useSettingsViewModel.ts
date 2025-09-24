@@ -1,65 +1,65 @@
-import { useState, useEffect } from 'react';
-import { SettingsService } from '@/services/SettingsService';
-import { AppSettings } from '@/types';
+import { useState } from "react";
+import { AppSettings } from "@/types";
+import { useSettings, useUpdateSettings } from "@/hooks/useOtherServices";
 
 interface SettingsViewModel {
   isLoading: boolean;
   error: Error | null;
   settings: AppSettings | null;
-  updateSetting: (key: keyof AppSettings, value: AppSettings[keyof AppSettings]) => void;
+  updateSetting: (
+    key: keyof AppSettings,
+    value: AppSettings[keyof AppSettings]
+  ) => void;
   saveSettings: () => Promise<void>;
   isSaving: boolean;
 }
 
 export const useSettingsViewModel = (): SettingsViewModel => {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<Error | null>(null);
-  const [settings, setSettings] = useState<AppSettings | null>(null);
-  const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [localSettings, setLocalSettings] = useState<AppSettings | null>(null);
 
-  useEffect(() => {
-    const loadSettings = async () => {
-      try {
-        setIsLoading(true);
-        const fetchedSettings = await SettingsService.fetchSettings();
-        setSettings(fetchedSettings);
-      } catch (err) {
-        setError(err as Error);
-      } finally {
-        setIsLoading(false);
-      }
+  // React Query hooks
+  const { data: settings, isLoading, error } = useSettings();
+
+  const updateSettingsMutation = useUpdateSettings();
+
+  // Use local state for editing, fallback to server data
+  const currentSettings = localSettings || settings || null;
+
+  const updateSetting = (
+    key: keyof AppSettings,
+    value: AppSettings[keyof AppSettings]
+  ) => {
+    const baseSettings = settings || {
+      appName: "Barak",
+      currency: "BRL",
+      dateFormat: "DD/MM/YYYY",
+      notificationsEnabled: true,
     };
 
-    loadSettings();
-  }, []);
-
-  const updateSetting = (key: keyof AppSettings, value: AppSettings[keyof AppSettings]) => {
-    setSettings(prevSettings => {
-      if (!prevSettings) return null;
-      return { ...prevSettings, [key]: value };
+    setLocalSettings((prevSettings) => {
+      const current = prevSettings || baseSettings;
+      return { ...current, [key]: value };
     });
   };
 
   const saveSettings = async () => {
-    if (!settings) return;
-    setIsSaving(true);
+    if (!currentSettings) return;
+
     try {
-      await SettingsService.updateSettings(settings);
-      alert('Settings saved successfully!');
+      await updateSettingsMutation.mutateAsync(currentSettings);
+      setLocalSettings(null); // Reset local state after successful save
     } catch (err) {
-      setError(err as Error);
-      alert('Failed to save settings.');
-    } finally {
-      setIsSaving(false);
+      console.error("Erro ao salvar configurações:", err);
+      throw err;
     }
   };
 
   return {
     isLoading,
-    error,
-    settings,
+    error: error as Error | null,
+    settings: currentSettings,
     updateSetting,
     saveSettings,
-    isSaving,
+    isSaving: updateSettingsMutation.isPending,
   };
 };
