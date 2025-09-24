@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { ProposalService } from "@/services/ProposalService";
+import { useMemo } from "react";
+import { useSales } from "@/hooks/useProposalsAndSales";
 import { Proposal } from "@/types";
 
 interface SalePageViewModel {
@@ -9,38 +9,55 @@ interface SalePageViewModel {
 }
 
 export const useSalePageViewModel = (): SalePageViewModel => {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<Error | null>(null);
-  const [sales, setSales] = useState<Proposal[]>([]);
+  // Usar React Query hook para vendas
+  const { data: salesData, isLoading, error } = useSales();
 
-  useEffect(() => {
-    const loadSales = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-        const allProposals = await ProposalService.fetchProposals();
+  // Converter dados de vendas para formato de Proposal se necessário
+  const sales = useMemo(() => {
+    if (!salesData) return [];
 
-        // Filtrar apenas propostas finalizadas e válidas
-        const approvedSales = allProposals.filter(
-          (p) => p && p.status === "FINALIZADA" && p.client && p.vehicle
-        );
+    // Se salesData já são Proposals (vindas do ProposalService), usar diretamente
+    // Se são Sale[], converter para Proposal format
+    if (Array.isArray(salesData) && salesData.length > 0) {
+      const firstItem = salesData[0];
 
-        setSales(approvedSales || []);
-      } catch (err) {
-        console.error("Erro ao carregar vendas:", err);
-        setError(err as Error);
-        setSales([]); // Garantir que sales não seja undefined
-      } finally {
-        setIsLoading(false);
+      // Verificar se já são objetos Proposal
+      if ("client" in firstItem && "vehicle" in firstItem) {
+        return salesData as unknown as Proposal[];
       }
-    };
 
-    loadSales();
-  }, []);
+      // Converter Sale[] para Proposal[]
+      return salesData.map(
+        (sale: { date: string; amount: number }, index: number) => ({
+          id: index.toString(),
+          status: "FINALIZADA" as const,
+          value: sale.amount || 0,
+          updatedAt: sale.date,
+          client: { id: "1", name: "Cliente", email: "", phone: "" },
+          vehicle: {
+            id: "1",
+            name: "Veículo",
+            price: sale.amount || 0,
+            type: "car",
+            status: "sold",
+          },
+          sellerId: "1",
+          bankId: "1",
+          isFinanced: "SIM" as const,
+          ilaValue: 0,
+          returnValue: 0,
+          bankReturnMultiplier: 1,
+          selectedReturn: 1,
+        })
+      ) as Proposal[];
+    }
+
+    return [];
+  }, [salesData]);
 
   return {
     isLoading,
-    error,
+    error: error as Error | null,
     sales,
   };
 };

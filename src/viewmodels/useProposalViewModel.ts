@@ -1,6 +1,11 @@
-import { useState, useEffect, useCallback } from 'react';
-import { ProposalService } from '@/services/ProposalService';
-import { Proposal } from '@/types';
+import { useState } from "react";
+import {
+  useProposals,
+  useCreateProposal,
+  useApproveProposal,
+  useCancelProposal,
+} from "@/hooks/useProposalsAndSales";
+import { Proposal } from "@/types";
 
 interface ProposalViewModel {
   isLoading: boolean;
@@ -11,34 +16,21 @@ interface ProposalViewModel {
   editingProposal: Partial<Proposal> | null;
   openModal: (proposal?: Partial<Proposal>) => void;
   closeModal: () => void;
-  handleSaveProposal: (proposal: Omit<Proposal, 'id'>) => Promise<void>;
+  handleSaveProposal: (proposal: Omit<Proposal, "id">) => Promise<void>;
   handleApproveProposal: (proposalId: string) => Promise<void>;
   handleCancelProposal: (proposalId: string) => Promise<void>;
 }
 
 export const useProposalViewModel = (): ProposalViewModel => {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<Error | null>(null);
-  const [proposals, setProposals] = useState<Proposal[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [editingProposal, setEditingProposal] = useState<Partial<Proposal> | null>(null);
+  const [editingProposal, setEditingProposal] =
+    useState<Partial<Proposal> | null>(null);
 
-  const loadProposals = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const fetchedProposals = await ProposalService.fetchProposals();
-      setProposals(fetchedProposals);
-    } catch (err) {
-      setError(err as Error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    loadProposals();
-  }, [loadProposals]);
+  // React Query hooks
+  const { data: proposals = [], isLoading, error } = useProposals();
+  const createMutation = useCreateProposal();
+  const approveMutation = useApproveProposal();
+  const cancelMutation = useCancelProposal();
 
   const openModal = (proposal: Partial<Proposal> | null = null) => {
     setEditingProposal(proposal);
@@ -50,43 +42,38 @@ export const useProposalViewModel = (): ProposalViewModel => {
     setIsModalOpen(false);
   };
 
-  const handleSaveProposal = async (proposal: Omit<Proposal, 'id'>) => {
-    setIsSubmitting(true);
+  const handleSaveProposal = async (proposal: Omit<Proposal, "id">) => {
     try {
-      await ProposalService.saveProposal(proposal);
-      await loadProposals();
+      await createMutation.mutateAsync(proposal);
       closeModal();
     } catch (err) {
-      setError(err as Error);
-    } finally {
-      setIsSubmitting(false);
+      console.error("Erro ao salvar proposta:", err);
+      throw err;
     }
   };
 
   const handleApproveProposal = async (proposalId: string) => {
     try {
-      await ProposalService.approveProposal(proposalId);
-      await loadProposals();
+      await approveMutation.mutateAsync(proposalId);
     } catch (err) {
-      setError(err as Error);
+      console.error("Erro ao aprovar proposta:", err);
     }
   };
 
   const handleCancelProposal = async (proposalId: string) => {
     try {
-      await ProposalService.cancelProposal(proposalId);
-      await loadProposals();
+      await cancelMutation.mutateAsync(proposalId);
     } catch (err) {
-      setError(err as Error);
+      console.error("Erro ao cancelar proposta:", err);
     }
   };
 
   return {
     isLoading,
-    error,
+    error: error as Error | null,
     proposals,
     isModalOpen,
-    isSubmitting,
+    isSubmitting: createMutation.isPending,
     editingProposal,
     openModal,
     closeModal,

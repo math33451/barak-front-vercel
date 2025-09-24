@@ -11,6 +11,8 @@
     "test:integration": "curl -s http://localhost:3000/tests || echo 'Frontend não está rodando. Execute: npm run dev'"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.90.2",
+    "@tanstack/react-query-devtools": "^5.90.2",
     "axios": "^1.12.2",
     "chart.js": "^4.5.0",
     "lucide-react": "^0.544.0",

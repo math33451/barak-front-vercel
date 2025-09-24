@@ -1,90 +1,85 @@
-import React from "react";
-import { Line } from "react-chartjs-2";
-import ChartContainer from "@/components/ui/ChartContainer";
-import { Sale } from "@/types";
+"use client";
 
 interface SalesChartProps {
-  salesData: Sale[];
+  data: Array<{ month: string; sales: number }>;
+  isLoading?: boolean;
+  error?: Error | null;
 }
 
-export default function SalesChart({ salesData }: SalesChartProps) {
-  if (!salesData || salesData.length === 0) {
+export default function SalesChart({
+  data,
+  isLoading,
+  error,
+}: SalesChartProps) {
+  if (isLoading) {
     return (
-      <ChartContainer>
-        <div className="flex items-center justify-center h-full text-gray-500">
-          No sales data available.
+      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+        <h3 className="text-lg font-semibold mb-4">Vendas por Mês</h3>
+        <div className="h-64 flex items-center justify-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
         </div>
-      </ChartContainer>
+      </div>
     );
   }
 
-  const chartData = {
-    labels: salesData.map(sale => new Date(sale.date).toLocaleDateString('pt-BR', { month: 'short', day: 'numeric' })),
-    datasets: [
-      {
-        label: "Vendas",
-        data: salesData.map(sale => sale.amount),
-        borderColor: "rgb(2, 132, 199)",
-        backgroundColor: "rgba(2, 132, 199, 0.1)",
-        tension: 0.3,
-        fill: true,
-      },
-    ],
-  };
+  if (error) {
+    return (
+      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+        <h3 className="text-lg font-semibold mb-4">Vendas por Mês</h3>
+        <div className="h-64 flex items-center justify-center text-red-500">
+          Erro ao carregar gráfico: {error.message}
+        </div>
+      </div>
+    );
+  }
 
-  const salesOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top" as const,
-      },
-      title: {
-        display: true,
-        text: "Vendas Recentes",
-        color: "#0f172a",
-        font: {
-          size: 16,
-          weight: "bold" as const,
-        },
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        grid: {
-          color: "rgba(148, 163, 184, 0.1)",
-        },
-        ticks: {
-          color: "#334155",
-        },
-      },
-      x: {
-        grid: {
-          display: false,
-        },
-        ticks: {
-          color: "#334155",
-        },
-      },
-    },
-    interaction: {
-      mode: "index" as const,
-      intersect: false,
-    },
-    elements: {
-      line: {
-        borderWidth: 2,
-      },
-      point: {
-        radius: 3,
-        hoverRadius: 5,
-      },
-    },
-  };
+  if (!data || data.length === 0) {
+    return (
+      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+        <h3 className="text-lg font-semibold mb-4">Vendas por Mês</h3>
+        <div className="h-64 flex items-center justify-center text-gray-500">
+          Nenhum dado de vendas disponível
+        </div>
+      </div>
+    );
+  }
+
+  // Encontrar o valor máximo para escalonamento
+  const maxSales = Math.max(...data.map((item) => item.sales));
+  const scale = maxSales > 0 ? 200 / maxSales : 1; // altura máxima de 200px
 
   return (
-    <ChartContainer>
-      <Line data={chartData} options={salesOptions} />
-    </ChartContainer>
+    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+      <h3 className="text-lg font-semibold mb-4">Vendas por Mês</h3>
+      <div className="h-64">
+        <div className="flex items-end justify-between h-48 gap-2">
+          {data.map((item, index) => {
+            const barHeight = item.sales * scale;
+            const monthLabel = item.month.split("-")[1]; // Pegar só o mês (MM)
+
+            return (
+              <div key={index} className="flex-1 flex flex-col items-center">
+                <div className="relative flex-1 flex items-end">
+                  <div
+                    className="w-full bg-blue-500 rounded-t-sm transition-all duration-300 hover:bg-blue-600"
+                    style={{ height: `${Math.max(barHeight, 4)}px` }}
+                    title={`${item.month}: ${item.sales} vendas`}
+                  />
+                </div>
+                <div className="mt-2 text-xs text-gray-600 text-center">
+                  {monthLabel}
+                </div>
+                <div className="text-xs font-medium text-gray-800">
+                  {item.sales}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <div className="mt-4 text-sm text-gray-600 text-center">
+        Total: {data.reduce((sum, item) => sum + item.sales, 0)} vendas
+      </div>
+    </div>
   );
 }
