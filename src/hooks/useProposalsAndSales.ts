@@ -1,7 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { SalePageService } from "@/services/SalePageService";
 import { ProposalService } from "@/services/ProposalService";
-import type { Proposal } from "@/types";
 
 // Query keys para vendas e propostas
 export const salesKeys = {

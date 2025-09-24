@@ -18,7 +18,7 @@ interface BackendUnidadeEmpresa {
 const mapToBackend = (
   unit: Omit<UnidadeEmpresaDTO, "id">
 ): Omit<BackendUnidadeEmpresa, "idEmpresa"> => ({
-  nomeEmpresa: unit.name,
+  nomeEmpresa: unit.name as string,
 });
 
 // Função para mapear do backend para o frontend

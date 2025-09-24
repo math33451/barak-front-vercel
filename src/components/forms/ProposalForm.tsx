@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Proposal, Client, Vehicle, Bank, Employee } from "@/types";
+import { Proposal, Client, Vehicle } from "@/types";
 
 // Placeholder services
 const fetchClients = async (): Promise<Client[]> => [
@@ -9,21 +9,6 @@ const fetchClients = async (): Promise<Client[]> => [
 ];
 const fetchVehicles = async (): Promise<Vehicle[]> => [
   { id: "1", name: "Car A", price: 10000, type: "car", status: "in_stock" },
-];
-const fetchBanks = async (): Promise<Bank[]> => [
-  { id: "1", name: "Bank A", code: "001" },
-];
-const fetchEmployees = async (): Promise<Employee[]> => [
-  {
-    id: "1",
-    name: "Jane Doe",
-    cpf: "123",
-    email: "jane@doe.com",
-    phone: "456",
-    isActive: true,
-    isManager: false,
-    unit: { id: 1, name: "Matriz" },
-  },
 ];
 
 interface ProposalFormProps {
@@ -41,24 +26,20 @@ export default function ProposalForm({
   onClose,
   onSave,
 }: ProposalFormProps) {
-  const [value, setValue] = useState(0);
-  const [selectedReturn, setSelectedReturn] = useState(1);
-  const [isFinanced, setIsFinanced] = useState(false);
-  const [sellerId, setSellerId] = useState("");
-  const [bankId, setBankId] = useState<string | undefined>(undefined);
-  const [clientId, setClientId] = useState("");
-  const [vehicleId, setVehicleId] = useState("");
+  const [value] = useState(0);
+  const [selectedReturn] = useState(1);
+  const [isFinanced] = useState(false);
+  const [sellerId] = useState("");
+  const [bankId] = useState<string | undefined>(undefined);
+  const [clientId] = useState("");
+  const [vehicleId] = useState("");
 
   const [clients, setClients] = useState<Client[]>([]);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
-  const [banks, setBanks] = useState<Bank[]>([]);
-  const [employees, setEmployees] = useState<Employee[]>([]);
 
   useEffect(() => {
     fetchClients().then(setClients);
     fetchVehicles().then(setVehicles);
-    fetchBanks().then(setBanks);
-    fetchEmployees().then(setEmployees);
   }, []);
 
   useEffect(() => {

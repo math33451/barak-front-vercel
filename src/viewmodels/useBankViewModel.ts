@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
-import { BankService } from '@/services/BankService';
-import { Bank } from '@/types';
+import { useState, useEffect, useCallback } from "react";
+import { BankService } from "@/services/BankService";
+import { Bank } from "@/types";
 
 interface BankViewModel {
   isLoading: boolean;
@@ -9,9 +9,9 @@ interface BankViewModel {
   isModalOpen: boolean;
   isSubmitting: boolean;
   editingBank: Partial<Bank> | null;
-  openModal: (bank?: Partial<Bank>) => void;
+  openModal: (bank?: Partial<Bank> | Bank) => void;
   closeModal: () => void;
-  handleSaveBank: (bank: Omit<Bank, 'id'>) => Promise<void>;
+  handleSaveBank: (bank: Omit<Bank, "id">) => Promise<void>;
   handleDeleteBank: (bankId: string) => Promise<void>;
 }
 
@@ -39,7 +39,7 @@ export const useBankViewModel = (): BankViewModel => {
     loadBanks();
   }, [loadBanks]);
 
-  const openModal = (bank: Partial<Bank> | null = null) => {
+  const openModal = (bank: Partial<Bank> | Bank | null = null) => {
     setEditingBank(bank);
     setIsModalOpen(true);
   };
@@ -49,7 +49,7 @@ export const useBankViewModel = (): BankViewModel => {
     setIsModalOpen(false);
   };
 
-  const handleSaveBank = async (bank: Omit<Bank, 'id'>) => {
+  const handleSaveBank = async (bank: Omit<Bank, "id">) => {
     setIsSubmitting(true);
     try {
       await BankService.saveBank(bank);

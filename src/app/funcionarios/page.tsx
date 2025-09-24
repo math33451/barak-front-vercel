@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import DashboardLayout from '@/components/layout/DashboardLayout';
-import { Users, Plus, Edit, Trash2 } from 'lucide-react';
-import { useEmployeeViewModel } from '@/viewmodels/useEmployeeViewModel';
-import DataTable, { Column } from '@/components/ui/DataTable';
-import { Employee, UnidadeEmpresaDTO } from '@/types';
-import EmployeeForm from '@/components/forms/EmployeeForm';
-import { useEffect, useState } from 'react';
+import DashboardLayout from "@/components/layout/DashboardLayout";
+import { Users, Plus, Edit, Trash2 } from "lucide-react";
+import { useEmployeeViewModel } from "@/viewmodels/useEmployeeViewModel";
+import DataTable, { Column } from "@/components/ui/DataTable";
+import { Employee, UnidadeEmpresaDTO } from "@/types";
+import EmployeeForm from "@/components/forms/EmployeeForm";
+import { useEffect, useState } from "react";
 
-import { UnitService } from '@/services/UnitService';
+import { UnitService } from "@/services/UnitService";
 
 export default function Funcionarios() {
   const {
@@ -31,21 +31,39 @@ export default function Funcionarios() {
   }, []);
 
   const columns: Column<Employee>[] = [
-    { key: 'name', title: 'Nome' },
-    { key: 'email', title: 'E-mail' },
-    { key: 'phone', title: 'Telefone' },
-    { key: 'unit', title: 'Unidade', render: (employee) => employee.unit.name },
-    { key: 'isManager', title: 'Gerente', render: (employee) => (employee.isManager ? 'Sim' : 'Não') },
-    { key: 'isActive', title: 'Ativo', render: (employee) => (employee.isActive ? 'Sim' : 'Não') },
+    { key: "name", title: "Nome" },
+    { key: "email", title: "E-mail" },
+    { key: "phone", title: "Telefone" },
     {
-      key: 'actions',
-      title: 'Ações',
-      render: (employee) => (
+      key: "unit",
+      title: "Unidade",
+      render: (_, employee) => employee.unit?.name || "-",
+    },
+    {
+      key: "isManager",
+      title: "Gerente",
+      render: (_, employee) => (employee.isManager ? "Sim" : "Não"),
+    },
+    {
+      key: "isActive",
+      title: "Ativo",
+      render: (_, employee) => (employee.isActive ? "Sim" : "Não"),
+    },
+    {
+      key: "actions",
+      title: "Ações",
+      render: (_, employee) => (
         <div className="flex gap-2">
-          <button onClick={() => openModal(employee)} className="btn btn-sm btn-outline">
+          <button
+            onClick={() => openModal(employee)}
+            className="btn btn-sm btn-outline"
+          >
             <Edit className="h-4 w-4" />
           </button>
-          <button onClick={() => handleDeleteEmployee(employee.id)} className="btn btn-sm btn-outline btn-error">
+          <button
+            onClick={() => handleDeleteEmployee(employee.id)}
+            className="btn btn-sm btn-outline btn-error"
+          >
             <Trash2 className="h-4 w-4" />
           </button>
         </div>
@@ -74,15 +92,22 @@ export default function Funcionarios() {
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-[color:var(--heading)] flex items-center gap-2">
-            <Users className="h-6 w-6" style={{ color: 'var(--primary)' }} />
+            <Users className="h-6 w-6" style={{ color: "var(--primary)" }} />
             Funcionários Cadastrados
           </h2>
-          <button onClick={() => openModal()} className="btn btn-primary flex items-center gap-2">
+          <button
+            onClick={() => openModal()}
+            className="btn btn-primary flex items-center gap-2"
+          >
             <Plus className="h-5 w-5" /> Novo Funcionário
           </button>
         </div>
         {employees.length > 0 ? (
-          <DataTable<Employee> columns={columns} data={employees} title="Lista de Funcionários" />
+          <DataTable<Employee>
+            columns={columns}
+            data={employees}
+            title="Lista de Funcionários"
+          />
         ) : (
           <div className="overflow-x-auto rounded-lg border border-gray-100 bg-white shadow-sm">
             <p className="p-4">Nenhum funcionário cadastrado.</p>

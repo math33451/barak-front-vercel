@@ -15,7 +15,9 @@ type DataTableProps<T> = {
   viewAllText?: string;
 };
 
-export default function DataTable<T extends { [key: string]: unknown }>({
+type ItemWithId = { id?: string | number } & Record<string, unknown>;
+
+export default function DataTable<T extends ItemWithId>({
   title,
   columns,
   data,
@@ -52,23 +54,53 @@ export default function DataTable<T extends { [key: string]: unknown }>({
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {data && data.length > 0 ? (
-              data.map((item, index) => (
-                <tr key={index}>
-                  {columns.map((column) => (
-                    <td
-                      key={`${index}-${column.key as string}`}
-                      className="px-6 py-4 whitespace-nowrap"
-                    >
-                      {column.render
-                        ? column.render(item[column.key as keyof T], item)
-                        : item[column.key as keyof T] != null
-                        ? String(item[column.key as keyof T])
-                        : "-"}
-                    </td>
-                  ))}
-                </tr>
-              ))
+            {data && Array.isArray(data) && data.length > 0 ? (
+              data
+                .map((item, index) => {
+                  if (!item || typeof item !== "object") {
+                    console.warn(`Item inválido no índice ${index}:`, item);
+                    return null;
+                  }
+
+                  return (
+                    <tr key={item.id || `item-${index}`}>
+                      {columns.map((column) => {
+                        try {
+                          return (
+                            <td
+                              key={`${item.id || index}-${String(column.key)}`}
+                              className="px-6 py-4 whitespace-nowrap"
+                            >
+                              {column.render
+                                ? column.render(
+                                    item[column.key as keyof T],
+                                    item
+                                  )
+                                : item[column.key as keyof T] != null
+                                ? String(item[column.key as keyof T])
+                                : "-"}
+                            </td>
+                          );
+                        } catch (error) {
+                          console.error(
+                            `Erro ao renderizar coluna ${String(column.key)}:`,
+                            error,
+                            item
+                          );
+                          return (
+                            <td
+                              key={`${item.id || index}-${String(column.key)}`}
+                              className="px-6 py-4 whitespace-nowrap text-red-500"
+                            >
+                              Erro
+                            </td>
+                          );
+                        }
+                      })}
+                    </tr>
+                  );
+                })
+                .filter(Boolean)
             ) : (
               <tr>
                 <td

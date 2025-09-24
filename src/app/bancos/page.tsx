@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import DashboardLayout from '@/components/layout/DashboardLayout';
-import { CreditCard, Plus, Edit, Trash2 } from 'lucide-react';
-import { useBankViewModel } from '@/viewmodels/useBankViewModel';
-import DataTable, { Column } from '@/components/ui/DataTable';
-import { Bank } from '@/types';
-import BankForm from '@/components/forms/BankForm';
+import DashboardLayout from "@/components/layout/DashboardLayout";
+import { CreditCard, Plus, Edit, Trash2 } from "lucide-react";
+import { useBankViewModel } from "@/viewmodels/useBankViewModel";
+import DataTable, { Column } from "@/components/ui/DataTable";
+import { Bank } from "@/types";
+import BankForm from "@/components/forms/BankForm";
 
 export default function Bancos() {
   const {
@@ -23,22 +23,28 @@ export default function Bancos() {
 
   const columns: Column<Bank>[] = [
     {
-      key: 'name',
-      title: 'Nome do Banco',
+      key: "name",
+      title: "Nome do Banco",
     },
     {
-      key: 'code',
-      title: 'Código',
+      key: "code",
+      title: "Código",
     },
     {
-      key: 'actions',
-      title: 'Ações',
-      render: (bank) => (
+      key: "actions",
+      title: "Ações",
+      render: (_, bank) => (
         <div className="flex gap-2">
-          <button onClick={() => openModal(bank)} className="btn btn-sm btn-outline">
+          <button
+            onClick={() => openModal(bank)}
+            className="btn btn-sm btn-outline"
+          >
             <Edit className="h-4 w-4" />
           </button>
-          <button onClick={() => handleDeleteBank(bank.id)} className="btn btn-sm btn-outline btn-error">
+          <button
+            onClick={() => handleDeleteBank(bank.id)}
+            className="btn btn-sm btn-outline btn-error"
+          >
             <Trash2 className="h-4 w-4" />
           </button>
         </div>
@@ -69,16 +75,23 @@ export default function Bancos() {
           <h2 className="text-2xl font-bold text-[color:var(--heading)] flex items-center gap-2">
             <CreditCard
               className="h-6 w-6"
-              style={{ color: 'var(--primary)' }}
+              style={{ color: "var(--primary)" }}
             />
             Bancos cadastrados
           </h2>
-          <button onClick={() => openModal()} className="btn btn-primary flex items-center gap-2">
+          <button
+            onClick={() => openModal()}
+            className="btn btn-primary flex items-center gap-2"
+          >
             <Plus className="h-5 w-5" /> Novo Banco
           </button>
         </div>
         {banks.length > 0 ? (
-          <DataTable<Bank> columns={columns} data={banks} title="Lista de Bancos" />
+          <DataTable<Bank>
+            columns={columns}
+            data={banks}
+            title="Lista de Bancos"
+          />
         ) : (
           <div className="overflow-x-auto rounded-lg border border-gray-100 bg-white shadow-sm">
             <p className="p-4">Nenhum banco cadastrado.</p>

@@ -45,42 +45,76 @@ const mapToBackend = (
 };
 
 // Função para mapear do backend para o frontend
-const mapFromBackend = (backendProposta: BackendProposta): Proposal => ({
-  id: backendProposta.id?.toString() || "",
-  value: backendProposta.valorPropostaReal,
-  ilaValue: backendProposta.valorPropostaArrecadadoILA,
-  returnValue: backendProposta.valorRetorno,
-  bankReturnMultiplier: backendProposta.multiplicadorRetornoBanco,
-  selectedReturn: backendProposta.retornoSelecionado,
-  isFinanced: backendProposta.isFinanciado === "SIM" ? "SIM" : "NAO",
-  status: backendProposta.status as Proposal["status"],
-  updatedAt:
-    backendProposta.dataAtualizacao ||
-    backendProposta.dataVenda ||
-    new Date().toISOString(),
-  sellerId: backendProposta.idVendedor.toString(),
-  bankId: backendProposta.idBanco?.toString(),
-  client: {
-    id: backendProposta.idCliente.toString(),
-    name: "Cliente",
-    email: "",
-    phone: "",
-  },
-  vehicle: { id: "1", name: "Veículo", price: 0, type: "car", status: "sold" },
-});
+const mapFromBackend = (backendProposta: BackendProposta): Proposal => {
+  // Garantir que todos os campos obrigatórios existam
+  if (!backendProposta) {
+    throw new Error("Dados da proposta inválidos");
+  }
+
+  return {
+    id: backendProposta.id?.toString() || Math.random().toString(),
+    value: Number(backendProposta.valorPropostaReal) || 0,
+    ilaValue: Number(backendProposta.valorPropostaArrecadadoILA) || 0,
+    returnValue: Number(backendProposta.valorRetorno) || 0,
+    bankReturnMultiplier:
+      Number(backendProposta.multiplicadorRetornoBanco) || 1,
+    selectedReturn: Number(backendProposta.retornoSelecionado) || 1,
+    isFinanced: backendProposta.isFinanciado === "SIM" ? "SIM" : "NAO",
+    status: (backendProposta.status as Proposal["status"]) || "PENDENTE",
+    updatedAt:
+      backendProposta.dataAtualizacao ||
+      backendProposta.dataVenda ||
+      new Date().toISOString(),
+    sellerId: backendProposta.idVendedor?.toString() || "1",
+    bankId: backendProposta.idBanco?.toString() || "1",
+    client: {
+      id: backendProposta.idCliente?.toString() || "1",
+      name: `Cliente ${backendProposta.idCliente || "Desconhecido"}`,
+      email: "",
+      phone: "",
+    },
+    vehicle: {
+      id: "1",
+      name: "Veículo",
+      price: Number(backendProposta.valorPropostaReal) || 0,
+      type: "car",
+      status: "sold",
+    },
+  };
+};
 
 const fetchProposals = async (): Promise<Proposal[]> => {
   try {
     const response = await httpClient.get<BackendProposta[]>(
       "/rest/proposta/listar"
     );
-    if (response && response.length > 0) {
-      return response.map(mapFromBackend);
+
+    if (!response || !Array.isArray(response)) {
+      console.warn("Resposta inválida do backend:", response);
+      return [];
     }
-    return [];
+
+    if (response.length === 0) {
+      return [];
+    }
+
+    // Mapear e filtrar propostas válidas
+    const mappedProposals = response
+      .filter((item) => item && typeof item === "object")
+      .map((item, index) => {
+        try {
+          return mapFromBackend(item);
+        } catch (error) {
+          console.error(`Erro ao mapear proposta ${index}:`, error, item);
+          return null;
+        }
+      })
+      .filter((proposal): proposal is Proposal => proposal !== null);
+
+    return mappedProposals;
   } catch (error) {
     console.error("Erro ao buscar propostas:", error);
-    return [];
+    throw error; // Re-throw para que o React Query possa capturar
   }
 };
 

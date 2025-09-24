@@ -41,6 +41,7 @@ export interface BrandDistribution {
 }
 
 export interface Bank {
+  [key: string]: unknown;
   id: string;
   name: string;
   code: string;
@@ -143,6 +144,7 @@ export interface AuthResponse {
 }
 
 export interface UnidadeEmpresaDTO {
+  [key: string]: unknown;
   id: number;
   name: string;
   // Add other fields if present in your Java UnidadeEmpresaDTO
