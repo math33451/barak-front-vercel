@@ -1,38 +1,41 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { Car } from 'lucide-react';
-import { useLoginViewModel } from '@/viewmodels/useLoginViewModel';
+import Link from "next/link";
+import { Car } from "lucide-react";
+import { useLoginViewModel } from "@/viewmodels/useLoginViewModel";
+import { QuickTestButton } from "@/components/ui/QuickTestButton";
+import PasswordInput from "@/components/ui/PasswordInput";
 
 export default function Login() {
-  const { credentials, isLoading, error, handleChange, handleSubmit } = useLoginViewModel();
+  const { credentials, isLoading, error, handleChange, handleSubmit } =
+    useLoginViewModel();
 
   return (
     <div
       className="min-h-screen flex items-center justify-center p-4"
-      style={{ background: 'var(--background)' }}
+      style={{ background: "var(--background)" }}
     >
       <div
         className="w-full max-w-md space-y-8 p-8 rounded-xl shadow-sm border border-gray-100"
-        style={{ background: 'var(--card-background)' }}
+        style={{ background: "var(--card-background)" }}
       >
         <div className="text-center">
           <div className="flex justify-center items-center gap-2">
-            <Car className="h-7 w-7" style={{ color: 'var(--primary)' }} />
+            <Car className="h-7 w-7" style={{ color: "var(--primary)" }} />
             <h1
               className="text-3xl font-bold"
-              style={{ color: 'var(--primary)' }}
+              style={{ color: "var(--primary)" }}
             >
               Barak
             </h1>
           </div>
           <h2
             className="mt-6 text-2xl font-bold tracking-tight"
-            style={{ color: 'var(--heading)' }}
+            style={{ color: "var(--heading)" }}
           >
             Acesso ao Dashboard
           </h2>
-          <p className="mt-2 text-sm" style={{ color: 'var(--muted)' }}>
+          <p className="mt-2 text-sm" style={{ color: "var(--muted)" }}>
             Entre com suas credenciais para gerenciar o sistema
           </p>
         </div>
@@ -43,7 +46,7 @@ export default function Login() {
               <label
                 htmlFor="email"
                 className="block text-sm font-medium mb-1"
-                style={{ color: 'var(--foreground)' }}
+                style={{ color: "var(--foreground)" }}
               >
                 E-mail
               </label>
@@ -56,7 +59,7 @@ export default function Login() {
                 value={credentials.email}
                 onChange={handleChange}
                 className="input w-full text-sm"
-                placeholder="seu.email@barak.com.br"
+                placeholder="Ex: admin@barak.com"
               />
             </div>
 
@@ -65,7 +68,7 @@ export default function Login() {
                 <label
                   htmlFor="password"
                   className="block text-sm font-medium"
-                  style={{ color: 'var(--foreground)' }}
+                  style={{ color: "var(--foreground)" }}
                 >
                   Senha
                 </label>
@@ -76,23 +79,19 @@ export default function Login() {
                   Esqueceu a senha?
                 </Link>
               </div>
-              <input
+              <PasswordInput
                 id="password"
                 name="password"
-                type="password"
-                autoComplete="current-password"
-                required
                 value={credentials.password}
                 onChange={handleChange}
-                className="input w-full text-sm"
                 placeholder="••••••••"
+                className="input w-full text-sm"
+                required
               />
             </div>
           </div>
 
-          {error && (
-            <p className="text-red-500 text-sm text-center">{error}</p>
-          )}
+          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
           <div>
             <button
@@ -100,22 +99,35 @@ export default function Login() {
               disabled={isLoading}
               className="btn btn-primary w-full"
             >
-              {isLoading ? 'Entrando...' : 'Entrar'}
+              {isLoading ? "Entrando..." : "Entrar"}
             </button>
           </div>
         </form>
 
+        <div className="text-center">
+          <p className="text-sm" style={{ color: "var(--muted)" }}>
+            Não tem uma conta?{" "}
+            <Link
+              href="/register"
+              className="font-medium text-primary hover:text-primary-hover"
+            >
+              Criar conta
+            </Link>
+          </p>
+        </div>
+
         <div className="mt-6 flex items-center justify-center">
-          <div className="text-xs" style={{ color: 'var(--muted)' }}>
-            <span>
-              Barak - Sistema de gerenciamento de concessionária
-            </span>
+          <div className="text-xs" style={{ color: "var(--muted)" }}>
+            <span>Barak - Sistema de gerenciamento de concessionária</span>
             <div className="mt-1 text-center">
               © {new Date().getFullYear()} Todos os direitos reservados
             </div>
           </div>
         </div>
       </div>
+
+      {/* Botão de testes rápidos - só aparece em desenvolvimento */}
+      {process.env.NODE_ENV === "development" && <QuickTestButton />}
     </div>
   );
 }

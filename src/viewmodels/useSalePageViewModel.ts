@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { ProposalService } from '@/services/ProposalService';
-import { Proposal } from '@/types';
+import { useState, useEffect } from "react";
+import { ProposalService } from "@/services/ProposalService";
+import { Proposal } from "@/types";
 
 interface SalePageViewModel {
   isLoading: boolean;
@@ -17,11 +17,19 @@ export const useSalePageViewModel = (): SalePageViewModel => {
     const loadSales = async () => {
       try {
         setIsLoading(true);
+        setError(null);
         const allProposals = await ProposalService.fetchProposals();
-        const approvedSales = allProposals.filter(p => p.status === 'FINALIZADA');
-        setSales(approvedSales);
+
+        // Filtrar apenas propostas finalizadas e válidas
+        const approvedSales = allProposals.filter(
+          (p) => p && p.status === "FINALIZADA" && p.client && p.vehicle
+        );
+
+        setSales(approvedSales || []);
       } catch (err) {
+        console.error("Erro ao carregar vendas:", err);
         setError(err as Error);
+        setSales([]); // Garantir que sales não seja undefined
       } finally {
         setIsLoading(false);
       }

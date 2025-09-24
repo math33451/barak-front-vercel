@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Menu, Bell, Search, LogOut } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import React from "react";
+import { Menu, Bell, Search, LogOut } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type HeaderProps = {
   title: string;
@@ -13,8 +13,8 @@ export default function Header({ title, openSidebar }: HeaderProps) {
   const router = useRouter();
 
   const handleLogout = () => {
-    localStorage.removeItem('isAuthenticated');
-    router.push('/login');
+    localStorage.removeItem("isAuthenticated");
+    router.push("/login");
   };
 
   return (
@@ -32,7 +32,12 @@ export default function Header({ title, openSidebar }: HeaderProps) {
           <input
             type="text"
             placeholder="Buscar..."
-            className="input pl-10 pr-4 py-1.5 text-sm rounded-full"
+            className="pl-10 pr-4 py-2 text-sm rounded-full border-2 border-gray-300 bg-white text-gray-900 focus:border-blue-500 focus:outline-none"
+            style={{
+              width: "280px",
+              minWidth: "280px",
+              maxWidth: "280px",
+            }}
           />
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
         </div>
@@ -48,9 +53,14 @@ export default function Header({ title, openSidebar }: HeaderProps) {
             Admin
           </span>
         </div>
-        <button onClick={handleLogout} className="flex items-center gap-2 p-1 rounded-full hover:bg-gray-100">
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 p-1 rounded-full hover:bg-gray-100"
+        >
           <LogOut className="h-6 w-6 text-[color:var(--foreground)]" />
-          <span className="hidden md:block text-sm font-medium text-[color:var(--foreground)]">Sair</span>
+          <span className="hidden md:block text-sm font-medium text-[color:var(--foreground)]">
+            Sair
+          </span>
         </button>
       </div>
     </header>

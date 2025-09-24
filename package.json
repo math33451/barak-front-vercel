@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:backend": "chmod +x test-backend.sh && ./test-backend.sh",
+    "test:integration": "curl -s http://localhost:3000/tests || echo 'Frontend não está rodando. Execute: npm run dev'"
   },
   "dependencies": {
     "axios": "^1.12.2",

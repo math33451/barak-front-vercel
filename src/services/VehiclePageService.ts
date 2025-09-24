@@ -1,61 +1,25 @@
-import { Vehicle } from '@/types';
-
-const mockVehicles: Vehicle[] = [
-  {
-    id: "1",
-    name: "Honda Civic",
-    price: 75000,
-    type: "car",
-    status: "in_stock",
-    imageUrl: "/honda-civic.png",
-  },
-  {
-    id: "2",
-    name: "Yamaha MT-07",
-    price: 35000,
-    type: "motorcycle",
-    status: "in_stock",
-    imageUrl: "/yamaha-mt07.png",
-  },
-  {
-    id: "3",
-    name: "Toyota Corolla",
-    price: 85000,
-    type: "car",
-    status: "sold",
-    imageUrl: "/toyota-corolla.png",
-  },
-  {
-    id: "4",
-    name: "Kawasaki Ninja 400",
-    price: 28000,
-    type: "motorcycle",
-    status: "in_stock",
-    imageUrl: "/kawasaki-ninja-400.png",
-  },
-  {
-    id: "5",
-    name: "Ford Mustang",
-    price: 150000,
-    type: "car",
-    status: "in_stock",
-    imageUrl: "/ford-mustang.png",
-  },
-  {
-    id: "6",
-    name: "Harley-Davidson Iron 883",
-    price: 45000,
-    type: "motorcycle",
-    status: "sold",
-    imageUrl: "/harley-iron-883.png",
-  },
-];
+import { Vehicle } from "@/types";
+import { httpClient } from "@/infra/httpClient";
 
 const fetchVehicles = async (): Promise<Vehicle[]> => {
-  await new Promise(resolve => setTimeout(resolve, 500));
-  return mockVehicles;
+  const response = await httpClient.get<Vehicle[]>("/rest/veiculo/listar");
+  return response || [];
+};
+
+const saveVehicle = async (vehicle: Omit<Vehicle, "id">): Promise<Vehicle> => {
+  const response = await httpClient.post<Vehicle>(
+    "/rest/veiculo/salvar",
+    vehicle
+  );
+  return response;
+};
+
+const deleteVehicle = async (vehicleId: string): Promise<void> => {
+  await httpClient.delete<void>(`/rest/veiculo/delete/${vehicleId}`);
 };
 
 export const VehiclePageService = {
   fetchVehicles,
+  saveVehicle,
+  deleteVehicle,
 };

@@ -41,16 +41,17 @@ export interface BrandDistribution {
 }
 
 export interface Bank {
-  id?: number;
+  id: string;
   name: string;
-  balance: number;
+  code: string;
 }
 
 export interface ReportSummary {
   totalSales: number;
   vehiclesSold: number;
   newClients: number;
-  financingContracts: number;
+  financingContracts?: number;
+  totalExpenses: number;
 }
 
 export interface SalesByMonth {
@@ -83,11 +84,12 @@ export interface Retorno {
 }
 
 export interface Client {
-  id?: number;
+  [key: string]: unknown; // Added index signature
+  id: string;
   name: string;
   email: string;
   phone: string;
-  address: string;
+  address?: string;
 }
 
 export interface UserCredentials {
@@ -117,46 +119,11 @@ export interface Expense {
   category: string;
 }
 
-export interface Client {
-  [key: string]: unknown; // Added index signature
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-}
-
 export interface AppSettings {
   appName: string;
   currency: string;
   dateFormat: string;
   notificationsEnabled: boolean;
-}
-
-export interface ReportSummary {
-  totalSales: number;
-  vehiclesSold: number;
-  newClients: number;
-  totalExpenses: number;
-}
-
-export interface SalesByMonth {
-  month: string;
-  sales: number;
-}
-
-export interface VehicleSalesByBrand {
-  brand: string;
-  sales: number;
-}
-
-export interface TopSeller {
-  name: string;
-  sales: number;
-}
-
-export interface FinancingByBank {
-  bank: string;
-  count: number;
 }
 
 export interface LoginDTO {
@@ -201,8 +168,8 @@ export interface Proposal {
   returnValue: number;
   bankReturnMultiplier: number;
   selectedReturn: number;
-  isFinanced: 'SIM' | 'NAO';
-  status: 'PENDENTE' | 'FINALIZADA' | 'CANCELADA';
+  isFinanced: "SIM" | "NAO";
+  status: "PENDENTE" | "FINALIZADA" | "CANCELADA";
   updatedAt: string; // Assuming ISO date string
   sellerId: string;
   bankId?: string;

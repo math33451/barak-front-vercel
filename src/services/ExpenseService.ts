@@ -1,17 +1,25 @@
-import { Expense } from '@/types';
-
-const mockExpenses: Expense[] = [
-  { id: '1', description: 'Aluguel do Pátio', amount: 5000, date: '2025-09-01', category: 'Operacional' },
-  { id: '2', description: 'Salários', amount: 15000, date: '2025-09-05', category: 'Pessoal' },
-  { id: '3', description: 'Marketing Digital', amount: 2000, date: '2025-09-10', category: 'Marketing' },
-  { id: '4', description: 'Manutenção de Veículos', amount: 1200, date: '2025-09-12', category: 'Manutenção' },
-];
+import { Expense } from "@/types";
+import { httpClient } from "@/infra/httpClient";
 
 const fetchExpenses = async (): Promise<Expense[]> => {
-  await new Promise(resolve => setTimeout(resolve, 500));
-  return mockExpenses;
+  const response = await httpClient.get<Expense[]>("/rest/despesa/listar");
+  return response || [];
+};
+
+const saveExpense = async (expense: Omit<Expense, "id">): Promise<Expense> => {
+  const response = await httpClient.post<Expense>(
+    "/rest/despesa/salvar",
+    expense
+  );
+  return response;
+};
+
+const deleteExpense = async (expenseId: string): Promise<void> => {
+  await httpClient.delete<void>(`/rest/despesa/delete/${expenseId}`);
 };
 
 export const ExpenseService = {
   fetchExpenses,
+  saveExpense,
+  deleteExpense,
 };

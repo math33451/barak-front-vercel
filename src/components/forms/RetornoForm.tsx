@@ -1,96 +1,127 @@
-'use client';
+"use client";
 
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { Retorno } from '@/types';
-import { useRetornoViewModel } from '@/viewmodels/useRetornoViewModel';
+import { useState } from "react";
 
-const schema = z.object({
-  retorno1: z.number(),
-  retorno2: z.number(),
-  retorno3: z.number(),
-  retorno4: z.number(),
-  retorno5: z.number(),
-});
+export default function RetornoForm() {
+  const [retorno1, setRetorno1] = useState(0);
+  const [retorno2, setRetorno2] = useState(0);
+  const [retorno3, setRetorno3] = useState(0);
+  const [retorno4, setRetorno4] = useState(0);
+  const [retorno5, setRetorno5] = useState(0);
 
-interface RetornoFormProps {
-  retorno?: Retorno;
-}
-
-export default function RetornoForm({ retorno }: RetornoFormProps) {
-  const { isSaving, error, saveRetorno } = useRetornoViewModel();
-  const { register, handleSubmit, formState: { errors } } = useForm<Retorno>({
-    resolver: zodResolver(schema),
-    defaultValues: retorno,
-  });
-
-  const onSubmit: SubmitHandler<Retorno> = async (data) => {
-    await saveRetorno(data);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Placeholder for submission logic
+    console.log("Retornos:", {
+      retorno1,
+      retorno2,
+      retorno3,
+      retorno4,
+      retorno5,
+    });
+    alert("Dados salvos no console!");
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4 p-4 border rounded-lg">
+      <h3 className="text-lg font-medium">Configurar Retornos</h3>
+
+      {/* Retorno 1 */}
       <div>
-        <label htmlFor="retorno1" className="block text-sm font-medium text-gray-700">Retorno 1</label>
+        <label
+          htmlFor="retorno1"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Retorno 1 (%)
+        </label>
         <input
           id="retorno1"
           type="number"
-          {...register('retorno1', { valueAsNumber: true })}
-          className="input w-full"
+          step="0.01"
+          value={retorno1}
+          onChange={(e) => setRetorno1(parseFloat(e.target.value) || 0)}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
         />
-        {errors.retorno1 && <p className="text-red-500 text-sm mt-1">{errors.retorno1.message}</p>}
       </div>
 
+      {/* Retorno 2 */}
       <div>
-        <label htmlFor="retorno2" className="block text-sm font-medium text-gray-700">Retorno 2</label>
+        <label
+          htmlFor="retorno2"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Retorno 2 (%)
+        </label>
         <input
           id="retorno2"
           type="number"
-          {...register('retorno2', { valueAsNumber: true })}
-          className="input w-full"
+          step="0.01"
+          value={retorno2}
+          onChange={(e) => setRetorno2(parseFloat(e.target.value) || 0)}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
         />
-        {errors.retorno2 && <p className="text-red-500 text-sm mt-1">{errors.retorno2.message}</p>}
       </div>
 
+      {/* Retorno 3 */}
       <div>
-        <label htmlFor="retorno3" className="block text-sm font-medium text-gray-700">Retorno 3</label>
+        <label
+          htmlFor="retorno3"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Retorno 3 (%)
+        </label>
         <input
           id="retorno3"
           type="number"
-          {...register('retorno3', { valueAsNumber: true })}
-          className="input w-full"
+          step="0.01"
+          value={retorno3}
+          onChange={(e) => setRetorno3(parseFloat(e.target.value) || 0)}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
         />
-        {errors.retorno3 && <p className="text-red-500 text-sm mt-1">{errors.retorno3.message}</p>}
       </div>
 
+      {/* Retorno 4 */}
       <div>
-        <label htmlFor="retorno4" className="block text-sm font-medium text-gray-700">Retorno 4</label>
+        <label
+          htmlFor="retorno4"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Retorno 4 (%)
+        </label>
         <input
           id="retorno4"
           type="number"
-          {...register('retorno4', { valueAsNumber: true })}
-          className="input w-full"
+          step="0.01"
+          value={retorno4}
+          onChange={(e) => setRetorno4(parseFloat(e.target.value) || 0)}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
         />
-        {errors.retorno4 && <p className="text-red-500 text-sm mt-1">{errors.retorno4.message}</p>}
       </div>
 
+      {/* Retorno 5 */}
       <div>
-        <label htmlFor="retorno5" className="block text-sm font-medium text-gray-700">Retorno 5</label>
+        <label
+          htmlFor="retorno5"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Retorno 5 (%)
+        </label>
         <input
           id="retorno5"
           type="number"
-          {...register('retorno5', { valueAsNumber: true })}
-          className="input w-full"
+          step="0.01"
+          value={retorno5}
+          onChange={(e) => setRetorno5(parseFloat(e.target.value) || 0)}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
         />
-        {errors.retorno5 && <p className="text-red-500 text-sm mt-1">{errors.retorno5.message}</p>}
       </div>
 
-      <button type="submit" className="btn btn-primary w-full" disabled={isSaving}>
-        {isSaving ? 'Salvando...' : 'Salvar'}
+      <button
+        type="submit"
+        className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+      >
+        Salvar
       </button>
-
-      {error && <p className="text-red-500 text-sm mt-2">{error.message}</p>}
     </form>
   );
 }

@@ -1,21 +1,24 @@
-import { AppSettings } from '@/types';
-
-const mockSettings: AppSettings = {
-  appName: 'Barak',
-  currency: 'BRL',
-  dateFormat: 'DD/MM/YYYY',
-  notificationsEnabled: true,
-};
+import { AppSettings } from "@/types";
+import { httpClient } from "@/infra/httpClient";
 
 const fetchSettings = async (): Promise<AppSettings> => {
-  await new Promise(resolve => setTimeout(resolve, 500));
-  return mockSettings;
+  const response = await httpClient.get<AppSettings>("/rest/configuracoes");
+  return (
+    response || {
+      appName: "Barak",
+      currency: "BRL",
+      dateFormat: "DD/MM/YYYY",
+      notificationsEnabled: true,
+    }
+  );
 };
 
 const updateSettings = async (settings: AppSettings): Promise<AppSettings> => {
-  await new Promise(resolve => setTimeout(resolve, 500));
-  // In a real app, this would update the backend
-  return settings;
+  const response = await httpClient.post<AppSettings>(
+    "/rest/configuracoes",
+    settings
+  );
+  return response;
 };
 
 export const SettingsService = {

@@ -1,16 +1,51 @@
-import { Sale } from '@/types';
+import { Sale } from "@/types";
+import { httpClient } from "@/infra/httpClient";
 
-const mockSales: Sale[] = [
-  { date: '2025-09-01', amount: 75000 },
-  { date: '2025-09-05', amount: 120000 },
-  { date: '2025-09-10', amount: 90000 },
-  { date: '2025-09-12', amount: 150000 },
-  { date: '2025-09-15', amount: 80000 },
-];
+// Definindo interface baseada no DTO real do backend
+interface BackendProposta {
+  id: number;
+  idVendedor: number;
+  idUnidadeEmpresa: number;
+  dataVenda: string;
+  dataAtualizacao: string | null;
+  idCliente: number;
+  valorPropostaReal: number;
+  valorPropostaArrecadadoILA: number;
+  isFinanciado: "SIM" | "NAO";
+  idBanco: number;
+  retornoSelecionado: number;
+  multiplicadorRetornoBanco: number;
+  valorRetorno: number;
+  valorPlus: number | null;
+  status: "FINALIZADA" | "PENDENTE" | "CANCELADA";
+}
 
 const fetchSales = async (): Promise<Sale[]> => {
-  await new Promise(resolve => setTimeout(resolve, 500));
-  return mockSales;
+  try {
+    // Como não há endpoint específico para vendas, vamos usar as propostas finalizadas
+    const propostas = await httpClient.get<BackendProposta[]>(
+      "/rest/proposta/listar"
+    );
+
+    if (propostas && propostas.length > 0) {
+      // Converte propostas finalizadas em vendas usando os nomes corretos do backend
+      return propostas
+        .filter((proposta) => proposta.status === "FINALIZADA")
+        .map((proposta) => ({
+          date: proposta.dataAtualizacao
+            ? proposta.dataAtualizacao.split("T")[0]
+            : proposta.dataVenda
+            ? proposta.dataVenda.split("T")[0]
+            : new Date().toISOString().split("T")[0],
+          amount: proposta.valorPropostaReal || 0,
+        }));
+    }
+
+    return [];
+  } catch (error) {
+    console.error("Erro ao buscar vendas:", error);
+    return [];
+  }
 };
 
 export const SalePageService = {

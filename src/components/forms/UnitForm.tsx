@@ -1,24 +1,30 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { UnidadeEmpresaDTO } from '@/types';
+import { useState, useEffect } from "react";
+import { UnidadeEmpresaDTO } from "@/types";
 
 interface UnitFormProps {
   isOpen: boolean;
   isSubmitting: boolean;
   editingUnit: Partial<UnidadeEmpresaDTO> | null;
   onClose: () => void;
-  onSave: (unit: Omit<UnidadeEmpresaDTO, 'id'>) => void;
+  onSave: (unit: Omit<UnidadeEmpresaDTO, "id">) => void;
 }
 
-export default function UnitForm({ isOpen, isSubmitting, editingUnit, onClose, onSave }: UnitFormProps) {
-  const [name, setName] = useState('');
+export default function UnitForm({
+  isOpen,
+  isSubmitting,
+  editingUnit,
+  onClose,
+  onSave,
+}: UnitFormProps) {
+  const [name, setName] = useState("");
 
   useEffect(() => {
     if (editingUnit) {
-      setName(editingUnit.name || '');
+      setName(editingUnit.name || "");
     } else {
-      setName('');
+      setName("");
     }
   }, [editingUnit]);
 
@@ -30,27 +36,46 @@ export default function UnitForm({ isOpen, isSubmitting, editingUnit, onClose, o
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div
+      className="fixed inset-0 flex justify-center items-center"
+      style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+    >
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-4">{editingUnit ? 'Editar Unidade' : 'Nova Unidade'}</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          {editingUnit ? "Editar Unidade" : "Nova Unidade"}
+        </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">Nome da Unidade</label>
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Nome da Unidade
+            </label>
             <input
               id="name"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="input w-full mt-1"
+              placeholder="Ex: Filial Centro, Loja Shopping, Matriz..."
               required
             />
           </div>
           <div className="flex justify-end gap-4">
-            <button type="button" onClick={onClose} className="btn btn-secondary">
+            <button
+              type="button"
+              onClick={onClose}
+              className="btn btn-secondary"
+            >
               Cancelar
             </button>
-            <button type="submit" disabled={isSubmitting} className="btn btn-primary">
-              {isSubmitting ? 'Salvando...' : 'Salvar'}
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="btn btn-primary"
+            >
+              {isSubmitting ? "Salvando..." : "Salvar"}
             </button>
           </div>
         </form>

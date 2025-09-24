@@ -9,6 +9,11 @@ import {
   Settings,
   X,
   Repeat,
+  UserCheck,
+  Building,
+  FileText,
+  Receipt,
+  Landmark,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -45,15 +50,22 @@ export default function Sidebar({
   activePath,
 }: SidebarProps) {
   const navigation = [
+    // Páginas principais primeiro
     {
       href: "/dashboard",
       label: "Dashboard",
       icon: <BarChart3 className="h-5 w-5" />,
     },
     {
-      href: "/vendas",
-      label: "Vendas",
-      icon: <ShoppingBag className="h-5 w-5" />,
+      href: "/relatorios",
+      label: "Relatórios",
+      icon: <TrendingUp className="h-5 w-5" />,
+    },
+    // Outras páginas em ordem alfabética
+    {
+      href: "/bancos",
+      label: "Bancos",
+      icon: <Landmark className="h-5 w-5" />,
     },
     {
       href: "/clientes",
@@ -61,19 +73,29 @@ export default function Sidebar({
       icon: <Users className="h-5 w-5" />,
     },
     {
+      href: "/configuracoes",
+      label: "Configurações",
+      icon: <Settings className="h-5 w-5" />,
+    },
+    {
+      href: "/despesas",
+      label: "Despesas",
+      icon: <Receipt className="h-5 w-5" />,
+    },
+    {
       href: "/financiamento",
       label: "Financiamento",
       icon: <CreditCard className="h-5 w-5" />,
     },
     {
-      href: "/relatorios",
-      label: "Relatórios",
-      icon: <TrendingUp className="h-5 w-5" />,
+      href: "/funcionarios",
+      label: "Funcionários",
+      icon: <UserCheck className="h-5 w-5" />,
     },
     {
-      href: "/configuracoes",
-      label: "Configurações",
-      icon: <Settings className="h-5 w-5" />,
+      href: "/propostas",
+      label: "Propostas",
+      icon: <FileText className="h-5 w-5" />,
     },
     {
       href: "/retorno",
@@ -81,9 +103,19 @@ export default function Sidebar({
       icon: <Repeat className="h-5 w-5" />,
     },
     {
-      href: "/bancos",
-      label: "Bancos",
-      icon: <CreditCard className="h-5 w-5" />,
+      href: "/unidades",
+      label: "Unidades",
+      icon: <Building className="h-5 w-5" />,
+    },
+    {
+      href: "/veiculos",
+      label: "Veículos",
+      icon: <Car className="h-5 w-5" />,
+    },
+    {
+      href: "/vendas",
+      label: "Vendas",
+      icon: <ShoppingBag className="h-5 w-5" />,
     },
   ];
 

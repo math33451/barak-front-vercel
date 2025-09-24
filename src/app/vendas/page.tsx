@@ -1,19 +1,54 @@
-'use client';
+"use client";
 
-import { ShoppingBag, Plus } from 'lucide-react';
-import DashboardLayout from '@/components/layout/DashboardLayout';
-import { useSalePageViewModel } from '@/viewmodels/useSalePageViewModel';
-import DataTable, { Column } from '@/components/ui/DataTable';
-import { Proposal } from '@/types';
+import { ShoppingBag, Plus } from "lucide-react";
+import DashboardLayout from "@/components/layout/DashboardLayout";
+import { useSalePageViewModel } from "@/viewmodels/useSalePageViewModel";
+import DataTable, { Column } from "@/components/ui/DataTable";
+import { Proposal } from "@/types";
 
 export default function Vendas() {
   const { isLoading, error, sales } = useSalePageViewModel();
 
   const columns: Column<Proposal>[] = [
-    { key: 'updatedAt', title: 'Data da Venda', render: (sale) => new Date(sale.updatedAt).toLocaleDateString('pt-BR') },
-    { key: 'client', title: 'Cliente', render: (sale) => sale.client.name },
-    { key: 'vehicle', title: 'Veículo', render: (sale) => sale.vehicle.name },
-    { key: 'value', title: 'Valor', render: (sale) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sale.value) },
+    {
+      key: "updatedAt",
+      title: "Data da Venda",
+      render: (_, sale) => {
+        try {
+          return sale.updatedAt
+            ? new Date(sale.updatedAt).toLocaleDateString("pt-BR")
+            : "Data não disponível";
+        } catch {
+          return "Data inválida";
+        }
+      },
+    },
+    {
+      key: "client",
+      title: "Cliente",
+      render: (_, sale) => sale.client?.name || "Cliente não informado",
+    },
+    {
+      key: "vehicle",
+      title: "Veículo",
+      render: (_, sale) => sale.vehicle?.name || "Veículo não informado",
+    },
+    {
+      key: "value",
+      title: "Valor",
+      render: (_, sale) => {
+        try {
+          return sale.value
+            ? new Intl.NumberFormat("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+              }).format(sale.value)
+            : "Valor não disponível";
+        } catch {
+          return "Valor inválido";
+        }
+      },
+    },
   ];
 
   if (isLoading) {
@@ -39,7 +74,7 @@ export default function Vendas() {
           <h2 className="text-2xl font-bold text-[color:var(--heading)] flex items-center gap-2">
             <ShoppingBag
               className="h-6 w-6"
-              style={{ color: 'var(--primary)' }}
+              style={{ color: "var(--primary)" }}
             />
             Vendas realizadas
           </h2>
@@ -48,7 +83,11 @@ export default function Vendas() {
           </button>
         </div>
         {sales.length > 0 ? (
-          <DataTable<Proposal> columns={columns} data={sales} title="Lista de Vendas" />
+          <DataTable<Proposal>
+            columns={columns}
+            data={sales}
+            title="Lista de Vendas"
+          />
         ) : (
           <div className="overflow-x-auto rounded-lg border border-gray-100 bg-white shadow-sm">
             <p className="p-4">Nenhuma venda cadastrada.</p>

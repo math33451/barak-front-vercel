@@ -1,44 +1,50 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios from "axios";
 
-class HttpClient {
-  private axiosInstance: AxiosInstance;
+const API_BASE_URL = "http://localhost:8089";
 
-  constructor(baseUrl: string) {
-    this.axiosInstance = axios.create({
-      baseURL: baseUrl,
-      headers: {
-        'Content-Type': 'application/json',
-      },
+// Função para pegar o token
+const getToken = () => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("jwt_token");
+  }
+  return null;
+};
+
+// Função para criar headers
+const getHeaders = () => {
+  const token = getToken();
+  return {
+    "Content-Type": "application/json",
+    ...(token && { Authorization: `Bearer ${token}` }),
+  };
+};
+
+export const httpClient = {
+  async get<T>(endpoint: string): Promise<T> {
+    const response = await axios.get(`${API_BASE_URL}${endpoint}`, {
+      headers: getHeaders(),
     });
-  }
+    return response.data;
+  },
 
-  private async request<T>(config: AxiosRequestConfig): Promise<T> {
-    try {
-      const response: AxiosResponse<T> = await this.axiosInstance.request<T>(config);
-      return response.data;
-    } catch (error: any) {
-      console.error('HTTP Request Error:', error);
-      throw error;
-    }
-  }
+  async post<T>(endpoint: string, data?: unknown): Promise<T> {
+    const response = await axios.post(`${API_BASE_URL}${endpoint}`, data, {
+      headers: getHeaders(),
+    });
+    return response.data;
+  },
 
-  get<T>(endpoint: string, config?: AxiosRequestConfig): Promise<T> {
-    return this.request<T>({ ...config, method: 'GET', url: endpoint });
-  }
+  async put<T>(endpoint: string, data?: unknown): Promise<T> {
+    const response = await axios.put(`${API_BASE_URL}${endpoint}`, data, {
+      headers: getHeaders(),
+    });
+    return response.data;
+  },
 
-  post<T>(endpoint: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
-    return this.request<T>({ ...config, method: 'POST', url: endpoint, data });
-  }
-
-  put<T>(endpoint: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
-    return this.request<T>({ ...config, method: 'PUT', url: endpoint, data });
-  }
-
-  delete<T>(endpoint: string, config?: AxiosRequestConfig): Promise<T> {
-    return this.request<T>({ ...config, method: 'DELETE', url: endpoint });
-  }
-}
-
-import { API_URL } from '@/config';
-
-export const httpClient = new HttpClient(API_URL);
+  async delete<T>(endpoint: string): Promise<T> {
+    const response = await axios.delete(`${API_BASE_URL}${endpoint}`, {
+      headers: getHeaders(),
+    });
+    return response.data;
+  },
+};

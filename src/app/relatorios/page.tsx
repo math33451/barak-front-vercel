@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import {
@@ -12,7 +12,7 @@ import {
 import React from "react";
 import { useReportViewModel } from "@/viewmodels/useReportViewModel";
 import { Line, Bar } from "react-chartjs-2";
-import { Chart as ChartJS, registerables } from 'chart.js';
+import { Chart as ChartJS, registerables } from "chart.js";
 
 ChartJS.register(...registerables);
 
@@ -73,11 +73,17 @@ export default function Relatorios() {
 
   // Sales by Month Chart Data
   const salesByMonthChartData = {
-    labels: salesByMonth.map(item => item.month),
+    labels:
+      salesByMonth && salesByMonth.length > 0
+        ? salesByMonth.map((item) => item.month || "Mês")
+        : ["Jan"],
     datasets: [
       {
         label: "Vendas",
-        data: salesByMonth.map(item => item.sales),
+        data:
+          salesByMonth && salesByMonth.length > 0
+            ? salesByMonth.map((item) => item.sales || 0)
+            : [0],
         borderColor: "rgb(2, 132, 199)",
         backgroundColor: "rgba(2, 132, 199, 0.1)",
         tension: 0.3,
@@ -125,11 +131,17 @@ export default function Relatorios() {
 
   // Vehicle Sales by Brand Chart Data
   const vehicleSalesByBrandChartData = {
-    labels: vehicleSalesByBrand.map(item => item.brand),
+    labels:
+      vehicleSalesByBrand && vehicleSalesByBrand.length > 0
+        ? vehicleSalesByBrand.map((item) => item.brand || "Marca")
+        : ["Outras"],
     datasets: [
       {
         label: "Vendas",
-        data: vehicleSalesByBrand.map(item => item.sales),
+        data:
+          vehicleSalesByBrand && vehicleSalesByBrand.length > 0
+            ? vehicleSalesByBrand.map((item) => item.sales || 0)
+            : [0],
         backgroundColor: [
           "rgba(2, 132, 199, 0.8)",
           "rgba(14, 165, 233, 0.8)",
@@ -185,24 +197,72 @@ export default function Relatorios() {
         {/* Controles de simulação - agrupados em um card único e responsivo */}
         <section className="bg-white rounded-xl shadow p-6 border border-gray-100 flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-4">
           <div className="flex-1 flex flex-col gap-2 min-w-[160px]">
-            <label className="text-xs text-gray-700 font-medium">Clientes no mês</label>
-            <input type="range" min={50} max={300} step={1} value={clientes} onChange={e => setClientes(Number(e.target.value))} className="accent-sky-600" />
+            <label className="text-xs text-gray-700 font-medium">
+              Clientes no mês
+            </label>
+            <input
+              type="range"
+              min={50}
+              max={300}
+              step={1}
+              value={clientes}
+              onChange={(e) => setClientes(Number(e.target.value))}
+              className="accent-sky-600"
+            />
             <span className="text-xs text-gray-500">{clientes} clientes</span>
           </div>
           <div className="flex-1 flex flex-col gap-2 min-w-[160px]">
-            <label className="text-xs text-gray-700 font-medium">Taxa de conversão (%)</label>
-            <input type="range" min={0.2} max={0.9} step={0.01} value={taxaConversao} onChange={e => setTaxaConversao(Number(e.target.value))} className="accent-sky-600" />
-            <span className="text-xs text-gray-500">{(taxaConversao * 100).toFixed(0)}%</span>
+            <label className="text-xs text-gray-700 font-medium">
+              Taxa de conversão (%)
+            </label>
+            <input
+              type="range"
+              min={0.2}
+              max={0.9}
+              step={0.01}
+              value={taxaConversao}
+              onChange={(e) => setTaxaConversao(Number(e.target.value))}
+              className="accent-sky-600"
+            />
+            <span className="text-xs text-gray-500">
+              {(taxaConversao * 100).toFixed(0)}%
+            </span>
           </div>
           <div className="flex-1 flex flex-col gap-2 min-w-[160px]">
-            <label className="text-xs text-gray-700 font-medium">Ticket médio (R$)</label>
-            <input type="range" min={50000} max={200000} step={1000} value={ticketMedio} onChange={e => setTicketMedio(Number(e.target.value))} className="accent-sky-600" />
-            <span className="text-xs text-gray-500">R$ {ticketMedio.toLocaleString('pt-BR')}</span>
+            <label className="text-xs text-gray-700 font-medium">
+              Ticket médio (R$)
+            </label>
+            <input
+              type="range"
+              min={50000}
+              max={200000}
+              step={1000}
+              value={ticketMedio}
+              onChange={(e) => setTicketMedio(Number(e.target.value))}
+              className="accent-sky-600"
+            />
+            <span className="text-xs text-gray-500">
+              R$ {ticketMedio.toLocaleString("pt-BR")}
+            </span>
           </div>
           <div className="flex-1 flex flex-col gap-2 min-w-[160px]">
-            <label className="text-xs text-gray-700 font-medium">% de vendas financiadas</label>
-            <input type="range" min={0.05} max={0.7} step={0.01} value={percentualFinanciamento} onChange={e => setPercentualFinanciamento(Number(e.target.value))} className="accent-sky-600" />
-            <span className="text-xs text-gray-500">{(percentualFinanciamento * 100).toFixed(0)}%</span>
+            <label className="text-xs text-gray-700 font-medium">
+              % de vendas financiadas
+            </label>
+            <input
+              type="range"
+              min={0.05}
+              max={0.7}
+              step={0.01}
+              value={percentualFinanciamento}
+              onChange={(e) =>
+                setPercentualFinanciamento(Number(e.target.value))
+              }
+              className="accent-sky-600"
+            />
+            <span className="text-xs text-gray-500">
+              {(percentualFinanciamento * 100).toFixed(0)}%
+            </span>
           </div>
         </section>
 
@@ -217,7 +277,9 @@ export default function Relatorios() {
           <ResumoCard
             icon={<CreditCard className="h-5 w-5" />}
             label="Fat. Financiado"
-            value={`R$ ${faturamentoFinanciadoSimulado.toLocaleString("pt-BR")}`}
+            value={`R$ ${faturamentoFinanciadoSimulado.toLocaleString(
+              "pt-BR"
+            )}`}
           />
           <ResumoCard
             icon={<CreditCard className="h-5 w-5" />}
@@ -278,19 +340,28 @@ export default function Relatorios() {
               Top 5 Vendedores
             </h3>
             <ol className="space-y-1">
-              {topSellers.map((v, i) => (
-                <li key={v.name} className="flex items-center gap-2">
-                  <span className="w-5 h-5 flex items-center justify-center rounded-full bg-sky-100 text-sky-700 font-bold text-xs">
-                    {i + 1}
-                  </span>
-                  <span className="font-medium text-[color:var(--heading)] text-sm">
-                    {v.name}
-                  </span>
-                  <span className="ml-auto text-[color:var(--muted)] text-xs">
-                    {v.sales} vendas
-                  </span>
+              {topSellers && topSellers.length > 0 ? (
+                topSellers.map((v, i) => (
+                  <li
+                    key={v.name || `seller-${i}`}
+                    className="flex items-center gap-2"
+                  >
+                    <span className="w-5 h-5 flex items-center justify-center rounded-full bg-sky-100 text-sky-700 font-bold text-xs">
+                      {i + 1}
+                    </span>
+                    <span className="font-medium text-[color:var(--heading)] text-sm">
+                      {v.name || "Vendedor"}
+                    </span>
+                    <span className="ml-auto text-[color:var(--muted)] text-xs">
+                      {v.sales || 0} vendas
+                    </span>
+                  </li>
+                ))
+              ) : (
+                <li className="text-sm text-gray-500">
+                  Nenhum vendedor encontrado
                 </li>
-              ))}
+              )}
             </ol>
           </div>
           <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-100">
@@ -298,19 +369,30 @@ export default function Relatorios() {
               Financiamentos por Banco
             </h3>
             <div className="flex flex-wrap gap-2">
-              {financingByBank.map((f) => (
-                <div key={f.bank} className="flex flex-col items-center w-20">
-                  <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold text-base mb-1">
-                    {f.bank[0]}
+              {financingByBank && financingByBank.length > 0 ? (
+                financingByBank.map((f, index) => (
+                  <div
+                    key={f.bank || `bank-${index}`}
+                    className="flex flex-col items-center w-20"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold text-base mb-1">
+                      {f.bank && f.bank.length > 0
+                        ? f.bank[0].toUpperCase()
+                        : "B"}
+                    </div>
+                    <span className="font-medium text-[color:var(--heading)] text-xs">
+                      {f.bank || "Banco"}
+                    </span>
+                    <span className="text-[10px] text-[color:var(--muted)]">
+                      {f.count || 0} contratos
+                    </span>
                   </div>
-                  <span className="font-medium text-[color:var(--heading)] text-xs">
-                    {f.bank}
-                  </span>
-                  <span className="text-[10px] text-[color:var(--muted)]">
-                    {f.count} contratos
-                  </span>
+                ))
+              ) : (
+                <div className="text-sm text-gray-500">
+                  Nenhum financiamento encontrado
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </section>
@@ -318,10 +400,16 @@ export default function Relatorios() {
         {/* Gráficos */}
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div className="bg-white rounded-lg shadow p-6 border border-gray-100">
-            <Line data={salesByMonthChartData} options={salesByMonthChartOptions} />
+            <Line
+              data={salesByMonthChartData}
+              options={salesByMonthChartOptions}
+            />
           </div>
           <div className="bg-white rounded-lg shadow p-6 border border-gray-100">
-            <Bar data={vehicleSalesByBrandChartData} options={vehicleSalesByBrandChartOptions} />
+            <Bar
+              data={vehicleSalesByBrandChartData}
+              options={vehicleSalesByBrandChartOptions}
+            />
           </div>
         </section>
       </div>
@@ -348,7 +436,9 @@ function ResumoCard({
           : "bg-white border-gray-100"
       }`}
     >
-      <div className={`mb-2 ${destaque ? "text-white" : "text-sky-600"}`}>{icon}</div>
+      <div className={`mb-2 ${destaque ? "text-white" : "text-sky-600"}`}>
+        {icon}
+      </div>
       <span className="text-xs font-medium mb-1">{label}</span>
       <span className="text-lg font-bold mt-1">{value}</span>
     </div>

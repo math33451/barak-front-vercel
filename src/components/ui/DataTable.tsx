@@ -15,7 +15,7 @@ type DataTableProps<T> = {
   viewAllText?: string;
 };
 
-export default function DataTable<T extends { [key: string]: unknown }>({ 
+export default function DataTable<T extends { [key: string]: unknown }>({
   title,
   columns,
   data,
@@ -52,20 +52,33 @@ export default function DataTable<T extends { [key: string]: unknown }>({
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {data.map((item, index) => (
-              <tr key={index}>
-                {columns.map((column) => (
-                  <td
-                    key={`${index}-${column.key as string}`}
-                    className="px-6 py-4 whitespace-nowrap"
-                  >
-                    {column.render
-                      ? column.render(item[column.key as keyof T], item)
-                      : String(item[column.key as keyof T])} {/* Fixed here */}
-                  </td>
-                ))}
+            {data && data.length > 0 ? (
+              data.map((item, index) => (
+                <tr key={index}>
+                  {columns.map((column) => (
+                    <td
+                      key={`${index}-${column.key as string}`}
+                      className="px-6 py-4 whitespace-nowrap"
+                    >
+                      {column.render
+                        ? column.render(item[column.key as keyof T], item)
+                        : item[column.key as keyof T] != null
+                        ? String(item[column.key as keyof T])
+                        : "-"}
+                    </td>
+                  ))}
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan={columns.length}
+                  className="px-6 py-4 text-center text-gray-500"
+                >
+                  Nenhum dado disponível
+                </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
