@@ -11,20 +11,13 @@ interface BackendProposta {
   idCliente: number;
   valorPropostaReal: number;
   valorPropostaArrecadadoILA: number;
-  isFinanciado: {
-    id: "S" | "N";
-    descricao: "SIM" | "NÃO";
-    logical: boolean;
-  };
+  isFinanciado: string; // "SIM" ou "NAO" vindos do backend
   idBanco: number;
   retornoSelecionado: number;
   multiplicadorRetornoBanco: number;
   valorRetorno: number;
-  valorPlus?: number;
-  status: {
-    id: "F" | "P" | "C";
-    descricao: "Finalizada" | "Pendente" | "Cancelada";
-  };
+  valorPlus?: number | null;
+  status: string; // "FINALIZADA" | "PENDENTE" | "CANCELADA"
 }
 
 // Função para mapear do frontend para o backend
@@ -42,30 +35,13 @@ const mapToBackend = (
     idCliente: parseInt(clientId),
     valorPropostaReal: Number(proposal.value) || 0,
     valorPropostaArrecadadoILA: Number(proposal.ilaValue) || 0,
-    isFinanciado: {
-      id: proposal.isFinanced === "SIM" ? "S" : "N",
-      descricao: proposal.isFinanced === "SIM" ? "SIM" : "NÃO",
-      logical: proposal.isFinanced === "SIM",
-    },
+    isFinanciado: proposal.isFinanced === "SIM" ? "SIM" : "NAO",
     idBanco: parseInt(bankId),
     retornoSelecionado: Number(proposal.selectedReturn) || 1,
     multiplicadorRetornoBanco: Number(proposal.bankReturnMultiplier) || 1,
     valorRetorno: Number(proposal.returnValue) || 0,
-    status: {
-      id:
-        proposal.status === "FINALIZADA"
-          ? "F"
-          : proposal.status === "PENDENTE"
-          ? "P"
-          : "C",
-      descricao:
-        proposal.status === "FINALIZADA"
-          ? "Finalizada"
-          : proposal.status === "PENDENTE"
-          ? "Pendente"
-          : "Cancelada",
-    },
-  };
+    status: proposal.status || "PENDENTE",
+  } as unknown as BackendProposta; // cast simples para seguir interface
 };
 
 // Função para mapear do backend para o frontend
@@ -76,13 +52,8 @@ const mapFromBackend = (backendProposta: BackendProposta): Proposal => ({
   returnValue: backendProposta.valorRetorno,
   bankReturnMultiplier: backendProposta.multiplicadorRetornoBanco,
   selectedReturn: backendProposta.retornoSelecionado,
-  isFinanced: backendProposta.isFinanciado.id === "S" ? "SIM" : "NAO",
-  status:
-    backendProposta.status.id === "F"
-      ? "FINALIZADA"
-      : backendProposta.status.id === "P"
-      ? "PENDENTE"
-      : "CANCELADA",
+  isFinanced: backendProposta.isFinanciado === "SIM" ? "SIM" : "NAO",
+  status: backendProposta.status as Proposal["status"],
   updatedAt:
     backendProposta.dataAtualizacao ||
     backendProposta.dataVenda ||
