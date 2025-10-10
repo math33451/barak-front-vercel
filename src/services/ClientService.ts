@@ -34,7 +34,7 @@ const mapFromBackend = (backendCliente: BackendCliente): Client => ({
 const fetchClients = async (): Promise<Client[]> => {
   try {
     const response = await httpClient.get<BackendCliente[]>(
-      "/rest/cliente/listar"
+      "/cliente/listar"
     );
     if (response && response.length > 0) {
       return response.map(mapFromBackend);
@@ -50,7 +50,7 @@ const saveClient = async (client: Omit<Client, "id">): Promise<Client> => {
   try {
     const backendData = mapToBackend(client);
     const response = await httpClient.post<BackendCliente>(
-      "/rest/cliente/salvar",
+      "/cliente/salvar",
       backendData
     );
     return mapFromBackend(response);
@@ -61,7 +61,7 @@ const saveClient = async (client: Omit<Client, "id">): Promise<Client> => {
 };
 
 const deleteClient = async (clientId: string): Promise<void> => {
-  await httpClient.delete<void>(`/rest/cliente/delete/${clientId}`);
+  await httpClient.delete<void>(`/cliente/delete/${clientId}`);
 };
 
 export const ClientService = {

@@ -24,7 +24,7 @@ const fetchSales = async (): Promise<Sale[]> => {
   try {
     // Como não há endpoint específico para vendas, vamos usar as propostas finalizadas
     const propostas = await httpClient.get<BackendProposta[]>(
-      "/rest/proposta/finalizadas"
+      "/proposta/finalizadas"
     );
 
     if (propostas && propostas.length > 0) {

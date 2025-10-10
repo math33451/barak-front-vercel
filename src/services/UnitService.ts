@@ -32,7 +32,7 @@ const mapFromBackend = (
 const fetchUnits = async (): Promise<UnidadeEmpresaDTO[]> => {
   try {
     const response = await httpClient.get<BackendUnidadeEmpresa[]>(
-      "/rest/unidade/listar"
+      "/unidade/listar"
     );
     if (response && response.length > 0) {
       return response
@@ -52,7 +52,7 @@ const saveUnit = async (
   try {
     const backendData = mapToBackend(unit);
     const response = await httpClient.post<BackendUnidadeEmpresa>(
-      "/rest/unidade",
+      "/unidade",
       backendData
     );
     return mapFromBackend(response);
@@ -63,7 +63,7 @@ const saveUnit = async (
 };
 
 const deleteUnit = async (unitId: number): Promise<void> => {
-  await httpClient.delete<void>(`/rest/unidade/${unitId}`);
+  await httpClient.delete<void>(`/unidade/${unitId}`);
 };
 
 export const UnitService = {

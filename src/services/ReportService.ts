@@ -9,7 +9,7 @@ import { httpClient } from "@/infra/httpClient";
 
 const fetchReportSummary = async (): Promise<ReportSummary> => {
   const response = await httpClient.get<ReportSummary>(
-    "/rest/relatorios/resumo"
+    "/relatorios/resumo"
   );
   return (
     response || {
@@ -23,28 +23,28 @@ const fetchReportSummary = async (): Promise<ReportSummary> => {
 
 const fetchSalesByMonth = async (): Promise<SalesByMonth[]> => {
   const response = await httpClient.get<SalesByMonth[]>(
-    "/rest/relatorios/vendas-mes"
+    "/relatorios/vendas-mes"
   );
   return response || [];
 };
 
 const fetchVehicleSalesByBrand = async (): Promise<VehicleSalesByBrand[]> => {
   const response = await httpClient.get<VehicleSalesByBrand[]>(
-    "/rest/relatorios/vendas-marca"
+    "/relatorios/vendas-marca"
   );
   return response || [];
 };
 
 const fetchTopSellers = async (): Promise<TopSeller[]> => {
   const response = await httpClient.get<TopSeller[]>(
-    "/rest/relatorios/top-vendedores"
+    "/relatorios/top-vendedores"
   );
   return response || [];
 };
 
 const fetchFinancingByBank = async (): Promise<FinancingByBank[]> => {
   const response = await httpClient.get<FinancingByBank[]>(
-    "/rest/relatorios/financiamentos-banco"
+    "/relatorios/financiamentos-banco"
   );
   return response || [];
 };

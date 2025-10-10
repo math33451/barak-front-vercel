@@ -48,7 +48,7 @@ const mapFromBackend = (backendFuncionario: BackendFuncionario): Employee => ({
 const fetchEmployees = async (): Promise<Employee[]> => {
   try {
     const response = await httpClient.get<BackendFuncionario[]>(
-      "/rest/funcionarios/listar"
+      "/funcionarios/listar"
     );
     if (response && response.length > 0) {
       return response.map(mapFromBackend);
@@ -66,7 +66,7 @@ const saveEmployee = async (
   try {
     const backendData = mapToBackend(employee);
     const response = await httpClient.post<BackendFuncionario>(
-      "/rest/funcionarios",
+      "/funcionarios",
       backendData
     );
     return mapFromBackend(response);
@@ -77,7 +77,7 @@ const saveEmployee = async (
 };
 
 const deleteEmployee = async (employeeId: string): Promise<void> => {
-  await httpClient.delete<void>(`/rest/funcionarios/${employeeId}`);
+  await httpClient.delete<void>(`/funcionarios/${employeeId}`);
 };
 
 export const EmployeeService = {

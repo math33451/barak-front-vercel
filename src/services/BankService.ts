@@ -23,7 +23,7 @@ const getHeaders = () => {
 
 const fetchBanks = async (): Promise<Bank[]> => {
   const response = await axios.get<BackendBank[]>(
-    `${API_BASE_URL}/rest/banco/listar`,
+    `${API_BASE_URL}/banco/listar`,
     {
       headers: getHeaders(),
     }
@@ -45,7 +45,7 @@ const fetchBanks = async (): Promise<Bank[]> => {
 
 const saveBank = async (bank: Omit<Bank, "id">): Promise<Bank> => {
   const response = await axios.post<Bank>(
-    `${API_BASE_URL}/rest/banco/salvar`,
+    `${API_BASE_URL}/banco/salvar`,
     bank,
     {
       headers: getHeaders(),
@@ -55,7 +55,7 @@ const saveBank = async (bank: Omit<Bank, "id">): Promise<Bank> => {
 };
 
 const deleteBank = async (bankId: string): Promise<void> => {
-  await axios.delete<void>(`${API_BASE_URL}/rest/banco/delete/${bankId}`, {
+  await axios.delete<void>(`${API_BASE_URL}/banco/delete/${bankId}`, {
     headers: getHeaders(),
   });
 };
