@@ -26,8 +26,8 @@ fi
 echo "3️⃣ Testando endpoints do backend para relatórios..."
 
 # Testa propostas
-PROPOSALS_RESPONSE=$(curl -s -w "%{http_code}" "http://localhost:8089/rest/proposta/listar" \
-  -H "Authorization: Bearer $(curl -s -X POST "http://localhost:8089/auth/login" \
+PROPOSALS_RESPONSE=$(curl -s -w "%{http_code}" "https://barak-backend-665569303635.us-central1.run.app/proposta/listar" \
+  -H "Authorization: Bearer $(curl -s -X POST "https://barak-backend-665569303635.us-central1.run.app/auth/login" \
   -H "Content-Type: application/json" \
   -d '{"email":"admin@barak.com","password":"123456"}' | grep -o '"token":"[^"]*"' | cut -d'"' -f4)" \
   -o /dev/null 2>/dev/null)
@@ -39,8 +39,8 @@ else
 fi
 
 # Testa clientes
-CLIENTS_RESPONSE=$(curl -s -w "%{http_code}" "http://localhost:8089/rest/cliente/listar" \
-  -H "Authorization: Bearer $(curl -s -X POST "http://localhost:8089/auth/login" \
+CLIENTS_RESPONSE=$(curl -s -w "%{http_code}" "https://barak-backend-665569303635.us-central1.run.app/cliente/listar" \
+  -H "Authorization: Bearer $(curl -s -X POST "https://barak-backend-665569303635.us-central1.run.app/auth/login" \
   -H "Content-Type: application/json" \
   -d '{"email":"admin@barak.com","password":"123456"}' | grep -o '"token":"[^"]*"' | cut -d'"' -f4)" \
   -o /dev/null 2>/dev/null)
@@ -52,8 +52,8 @@ else
 fi
 
 # Testa bancos
-BANKS_RESPONSE=$(curl -s -w "%{http_code}" "http://localhost:8089/rest/banco/listar" \
-  -H "Authorization: Bearer $(curl -s -X POST "http://localhost:8089/auth/login" \
+BANKS_RESPONSE=$(curl -s -w "%{http_code}" "https://barak-backend-665569303635.us-central1.run.app/banco/listar" \
+  -H "Authorization: Bearer $(curl -s -X POST "https://barak-backend-665569303635.us-central1.run.app/auth/login" \
   -H "Content-Type: application/json" \
   -d '{"email":"admin@barak.com","password":"123456"}' | grep -o '"token":"[^"]*"' | cut -d'"' -f4)" \
   -o /dev/null 2>/dev/null)

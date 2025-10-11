@@ -3,7 +3,7 @@
 # Script para testar a conectividade do backend
 # Execute: chmod +x test-backend.sh && ./test-backend.sh
 
-API_URL="${NEXT_PUBLIC_API_URL:-http://localhost:8089}"
+API_URL="${NEXT_PUBLIC_API_URL:-https://barak-backend-665569303635.us-central1.run.app}"
 
 echo "🧪 Testando conectividade do backend..."
 echo "📡 URL da API: $API_URL"

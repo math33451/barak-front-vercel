@@ -16,7 +16,7 @@
     <div id="resultado" style="margin-top: 20px; padding: 10px; border: 1px solid #ccc;"></div>
 
     <script>
-        const API_URL = 'http://localhost:8089';
+        const API_URL = 'https://barak-backend-665569303635.us-central1.run.app';
         let token = null;
 
         function log(message) {
@@ -69,7 +69,7 @@
             }
             
             try {
-                const response = await fetch(`${API_URL}/rest/banco/listar`, {
+                const response = await fetch(`${API_URL}/banco/listar`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -100,7 +100,7 @@
             }
             
             try {
-                const response = await fetch(`${API_URL}/rest/acordo/listar`, {
+                const response = await fetch(`${API_URL}/acordo/listar`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',

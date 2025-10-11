@@ -5,7 +5,7 @@ echo "🧪 Testando login completo..."
 
 # Primeiro, verifica se o backend está funcionando
 echo "1️⃣ Testando backend direto..."
-BACKEND_RESPONSE=$(curl -s -X POST "http://localhost:8089/auth/login" \
+BACKEND_RESPONSE=$(curl -s -X POST "https://barak-backend-665569303635.us-central1.run.app/auth/login" \
   -H "Content-Type: application/json" \
   -d '{"email":"admin@barak.com","password":"123456"}')
 

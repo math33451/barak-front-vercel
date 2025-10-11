@@ -35,15 +35,15 @@ npm run test:backend
 
 ```bash
 # Teste básico de conectividade
-curl -I http://localhost:8089
+curl -I https://barak-backend-665569303635.us-central1.run.app
 
 # Teste do endpoint de login
-curl -X POST http://localhost:8089/auth/login \
+curl -X POST https://barak-backend-665569303635.us-central1.run.app/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"test@test.com","password":"test"}'
 
 # Teste de CORS
-curl -X OPTIONS http://localhost:8089/auth/login \
+curl -X OPTIONS https://barak-backend-665569303635.us-central1.run.app/auth/login \
   -H "Origin: http://localhost:3000"
 ```
 
@@ -107,7 +107,7 @@ lsof -i :8089  # Backend
 
 ```bash
 # Ping do backend
-curl -I http://localhost:8089
+curl -I https://barak-backend-665569303635.us-central1.run.app
 
 # Teste de porta
 telnet localhost 8089

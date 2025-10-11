@@ -3,7 +3,7 @@
 echo "📋 Criando propostas fake..."
 
 # Fazer login e obter token
-TOKEN=$(curl -s -X POST "http://localhost:8089/auth/login" \
+TOKEN=$(curl -s -X POST "https://barak-backend-665569303635.us-central1.run.app/auth/login" \
   -H "Content-Type: application/json" \
   -d '{"email":"admin@barak.com","password":"123456"}' | \
   grep -o '"token":"[^"]*"' | cut -d'"' -f4)
@@ -18,8 +18,8 @@ echo "✅ Token obtido"
 # Obter IDs dos clientes e bancos criados
 echo "📊 Obtendo dados para propostas..."
 
-CLIENTES=$(curl -s -H "Authorization: Bearer $TOKEN" "http://localhost:8089/rest/cliente/listar")
-BANCOS=$(curl -s -H "Authorization: Bearer $TOKEN" "http://localhost:8089/rest/banco/listar")
+CLIENTES=$(curl -s -H "Authorization: Bearer $TOKEN" "https://barak-backend-665569303635.us-central1.run.app/cliente/listar")
+BANCOS=$(curl -s -H "Authorization: Bearer $TOKEN" "https://barak-backend-665569303635.us-central1.run.app/banco/listar")
 
 # Criar algumas propostas de exemplo (simplificadas para testar o backend)
 echo ""
@@ -27,7 +27,7 @@ echo "📋 Criando propostas de teste..."
 
 # Proposta 1
 echo "Criando proposta 1..."
-curl -s -X POST "http://localhost:8089/rest/proposta" \
+curl -s -X POST "https://barak-backend-665569303635.us-central1.run.app/proposta" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -42,7 +42,7 @@ curl -s -X POST "http://localhost:8089/rest/proposta" \
 
 # Proposta 2
 echo "Criando proposta 2..."
-curl -s -X POST "http://localhost:8089/rest/proposta" \
+curl -s -X POST "https://barak-backend-665569303635.us-central1.run.app/proposta" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -57,7 +57,7 @@ curl -s -X POST "http://localhost:8089/rest/proposta" \
 
 # Proposta 3
 echo "Criando proposta 3..."
-curl -s -X POST "http://localhost:8089/rest/proposta" \
+curl -s -X POST "https://barak-backend-665569303635.us-central1.run.app/proposta" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -72,7 +72,7 @@ curl -s -X POST "http://localhost:8089/rest/proposta" \
 
 # Proposta 4
 echo "Criando proposta 4..."
-curl -s -X POST "http://localhost:8089/rest/proposta" \
+curl -s -X POST "https://barak-backend-665569303635.us-central1.run.app/proposta" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -87,7 +87,7 @@ curl -s -X POST "http://localhost:8089/rest/proposta" \
 
 # Proposta 5
 echo "Criando proposta 5..."
-curl -s -X POST "http://localhost:8089/rest/proposta" \
+curl -s -X POST "https://barak-backend-665569303635.us-central1.run.app/proposta" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{

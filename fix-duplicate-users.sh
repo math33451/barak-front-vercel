@@ -4,7 +4,7 @@ echo "🔧 LIMPANDO USUÁRIOS DUPLICADOS..."
 
 # Primeiro, vamos tentar fazer login para pegar um token válido de algum usuário que ainda funcione
 echo "Tentando login com admin..."
-ADMIN_RESPONSE=$(curl -s -X POST http://localhost:8089/auth/login \
+ADMIN_RESPONSE=$(curl -s -X POST https://barak-backend-665569303635.us-central1.run.app/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"admin@barak.com","password":"admin123"}')
 
@@ -15,7 +15,7 @@ if [[ "$ADMIN_RESPONSE" != *"token"* ]]; then
   echo "❌ Admin não funcionou, criando usuário temporário..."
   
   # Criar um usuário temporário para poder fazer operações
-  TEMP_USER_RESPONSE=$(curl -s -X POST http://localhost:8089/auth/register \
+  TEMP_USER_RESPONSE=$(curl -s -X POST https://barak-backend-665569303635.us-central1.run.app/auth/register \
     -H "Content-Type: application/json" \
     -d '{
       "nome": "Admin Temp",
@@ -28,7 +28,7 @@ if [[ "$ADMIN_RESPONSE" != *"token"* ]]; then
   echo "Temp user response: $TEMP_USER_RESPONSE"
   
   # Fazer login com usuário temporário
-  TEMP_LOGIN_RESPONSE=$(curl -s -X POST http://localhost:8089/auth/login \
+  TEMP_LOGIN_RESPONSE=$(curl -s -X POST https://barak-backend-665569303635.us-central1.run.app/auth/login \
     -H "Content-Type: application/json" \
     -d '{"email":"temp@admin.com","password":"temp123"}')
   
@@ -51,7 +51,7 @@ if [ -z "$TOKEN" ]; then
   
   # Recriar só o usuário que precisamos
   echo "Recriando usuário único..."
-  curl -X POST http://localhost:8089/auth/register \
+  curl -X POST https://barak-backend-665569303635.us-central1.run.app/auth/register \
     -H "Content-Type: application/json" \
     -d '{
       "nome": "Usuário Teste",
@@ -72,7 +72,7 @@ fi
 
 echo ""
 echo "🚀 TESTANDO LOGIN FINAL..."
-FINAL_TEST=$(curl -s -X POST http://localhost:8089/auth/login \
+FINAL_TEST=$(curl -s -X POST https://barak-backend-665569303635.us-central1.run.app/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"user@teste.com","password":"123456"}')
 

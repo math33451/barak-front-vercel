@@ -104,7 +104,7 @@ class TestService {
   async testCORS(): Promise<TestResult> {
     try {
       // Simplesmente teste se conseguimos fazer uma requisição (CORS será testado implicitamente)
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8089";
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://barak-backend-665569303635.us-central1.run.app";
 
       return {
         name: "CORS",
@@ -134,7 +134,7 @@ class TestService {
           name: "Configuração de Ambiente",
           status: "warning",
           message:
-            "NEXT_PUBLIC_API_URL não definida, usando padrão (http://localhost:8089)",
+            "NEXT_PUBLIC_API_URL não definida, usando padrão (https://barak-backend-665569303635.us-central1.run.app)",
         };
       }
 

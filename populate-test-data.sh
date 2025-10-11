@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BASE_URL="http://localhost:8089"
+BASE_URL="https://barak-backend-665569303635.us-central1.run.app"
 EMAIL="user@teste.com"
 PASSWORD="123456"
 
@@ -77,8 +77,8 @@ unidade2_data='{
     "name": "Filial Rio de Janeiro"
 }'
 
-make_request "POST" "/rest/unidade" "$unidade1_data" "Criando Unidade Matriz São Paulo"
-make_request "POST" "/rest/unidade" "$unidade2_data" "Criando Unidade Filial Rio de Janeiro"
+make_request "POST" "/unidade" "$unidade1_data" "Criando Unidade Matriz São Paulo"
+make_request "POST" "/unidade" "$unidade2_data" "Criando Unidade Filial Rio de Janeiro"
 
 # Step 3: Create Banks
 echo "🏦 Criando Bancos..."
@@ -128,11 +128,11 @@ banco5_data='{
     "retorno5": 2.05
 }'
 
-make_request "POST" "/rest/banco/salvar" "$banco1_data" "Criando Banco do Brasil" "BANCO1_RESPONSE"
-make_request "POST" "/rest/banco/salvar" "$banco2_data" "Criando Itaú Unibanco" "BANCO2_RESPONSE"
-make_request "POST" "/rest/banco/salvar" "$banco3_data" "Criando Caixa Econômica Federal" "BANCO3_RESPONSE"
-make_request "POST" "/rest/banco/salvar" "$banco4_data" "Criando Santander" "BANCO4_RESPONSE"
-make_request "POST" "/rest/banco/salvar" "$banco5_data" "Criando Bradesco" "BANCO5_RESPONSE"
+make_request "POST" "/banco/salvar" "$banco1_data" "Criando Banco do Brasil" "BANCO1_RESPONSE"
+make_request "POST" "/banco/salvar" "$banco2_data" "Criando Itaú Unibanco" "BANCO2_RESPONSE"
+make_request "POST" "/banco/salvar" "$banco3_data" "Criando Caixa Econômica Federal" "BANCO3_RESPONSE"
+make_request "POST" "/banco/salvar" "$banco4_data" "Criando Santander" "BANCO4_RESPONSE"
+make_request "POST" "/banco/salvar" "$banco5_data" "Criando Bradesco" "BANCO5_RESPONSE"
 
 # Step 4: Create Clients
 echo "👥 Criando Clientes..."
@@ -172,11 +172,11 @@ client5_data='{
     "cpf": "567.890.123-45"
 }'
 
-make_request "POST" "/rest/cliente/salvar" "$client1_data" "Criando cliente João Silva Santos"
-make_request "POST" "/rest/cliente/salvar" "$client2_data" "Criando cliente Maria Oliveira Costa"
-make_request "POST" "/rest/cliente/salvar" "$client3_data" "Criando cliente Pedro Santos Lima"
-make_request "POST" "/rest/cliente/salvar" "$client4_data" "Criando cliente Ana Ferreira Alves"
-make_request "POST" "/rest/cliente/salvar" "$client5_data" "Criando cliente Carlos Eduardo Silva"
+make_request "POST" "/cliente/salvar" "$client1_data" "Criando cliente João Silva Santos"
+make_request "POST" "/cliente/salvar" "$client2_data" "Criando cliente Maria Oliveira Costa"
+make_request "POST" "/cliente/salvar" "$client3_data" "Criando cliente Pedro Santos Lima"
+make_request "POST" "/cliente/salvar" "$client4_data" "Criando cliente Ana Ferreira Alves"
+make_request "POST" "/cliente/salvar" "$client5_data" "Criando cliente Carlos Eduardo Silva"
 
 # Step 5: Create Funcionários
 echo "👨‍💼 Criando Funcionários..."
@@ -214,9 +214,9 @@ funcionario3_data='{
     }
 }'
 
-make_request "POST" "/rest/funcionarios" "$funcionario1_data" "Criando funcionário Roberto Silva Manager"
-make_request "POST" "/rest/funcionarios" "$funcionario2_data" "Criando funcionária Julia Vendedora Santos"
-make_request "POST" "/rest/funcionarios" "$funcionario3_data" "Criando funcionário Rafael Consultor Lima"
+make_request "POST" "/funcionarios" "$funcionario1_data" "Criando funcionário Roberto Silva Manager"
+make_request "POST" "/funcionarios" "$funcionario2_data" "Criando funcionária Julia Vendedora Santos"
+make_request "POST" "/funcionarios" "$funcionario3_data" "Criando funcionário Rafael Consultor Lima"
 
 # Step 6: Create Acordos (para a página de retorno)
 echo "🤝 Criando Acordos com Bancos..."
@@ -251,9 +251,9 @@ acordo3_data='{
     "retorno5": 2.0
 }'
 
-make_request "POST" "/rest/acordo/salvar" "$acordo1_data" "Criando acordo BB x Matriz SP"
-make_request "POST" "/rest/acordo/salvar" "$acordo2_data" "Criando acordo Itaú x Matriz SP"
-make_request "POST" "/rest/acordo/salvar" "$acordo3_data" "Criando acordo CEF x Filial RJ"
+make_request "POST" "/acordo/salvar" "$acordo1_data" "Criando acordo BB x Matriz SP"
+make_request "POST" "/acordo/salvar" "$acordo2_data" "Criando acordo Itaú x Matriz SP"
+make_request "POST" "/acordo/salvar" "$acordo3_data" "Criando acordo CEF x Filial RJ"
 
 # Step 7: Create Sample Proposals (para gerar vendas)
 echo "📋 Criando Propostas de Exemplo..."
@@ -374,14 +374,14 @@ proposta8_data='{
     "dataVenda": "'$current_year'-05-27"
 }'
 
-make_request "POST" "/rest/proposta" "$proposta1_data" "Criando proposta finalizada 1 (Jan)"
-make_request "POST" "/rest/proposta" "$proposta2_data" "Criando proposta finalizada 2 (Fev)"
-make_request "POST" "/rest/proposta" "$proposta3_data" "Criando proposta pendente 3"
-make_request "POST" "/rest/proposta" "$proposta4_data" "Criando proposta finalizada 4 (Mar)"
-make_request "POST" "/rest/proposta" "$proposta5_data" "Criando proposta finalizada 5 (Mar)"
-make_request "POST" "/rest/proposta" "$proposta6_data" "Criando proposta finalizada 6 (Abr)"
-make_request "POST" "/rest/proposta" "$proposta7_data" "Criando proposta finalizada 7 (Mai)"
-make_request "POST" "/rest/proposta" "$proposta8_data" "Criando proposta finalizada 8 (Mai)"
+make_request "POST" "/proposta" "$proposta1_data" "Criando proposta finalizada 1 (Jan)"
+make_request "POST" "/proposta" "$proposta2_data" "Criando proposta finalizada 2 (Fev)"
+make_request "POST" "/proposta" "$proposta3_data" "Criando proposta pendente 3"
+make_request "POST" "/proposta" "$proposta4_data" "Criando proposta finalizada 4 (Mar)"
+make_request "POST" "/proposta" "$proposta5_data" "Criando proposta finalizada 5 (Mar)"
+make_request "POST" "/proposta" "$proposta6_data" "Criando proposta finalizada 6 (Abr)"
+make_request "POST" "/proposta" "$proposta7_data" "Criando proposta finalizada 7 (Mai)"
+make_request "POST" "/proposta" "$proposta8_data" "Criando proposta finalizada 8 (Mai)"
 
 echo "🎉 População de dados de teste concluída!"
 echo ""
