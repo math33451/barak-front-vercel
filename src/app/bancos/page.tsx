@@ -31,6 +31,20 @@ export default function Bancos() {
       title: "Código",
     },
     {
+      key: "totalFinancing",
+      title: "Total Financiado",
+      render: (_, bank) => (
+        <span className="font-semibold text-green-600">
+          {bank.totalFinancing
+            ? `R$ ${bank.totalFinancing.toLocaleString("pt-BR", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}`
+            : "R$ 0,00"}
+        </span>
+      ),
+    },
+    {
       key: "actions",
       title: "Ações",
       render: (_, bank) => (

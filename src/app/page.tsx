@@ -1,19 +1,23 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/contexts/AuthContext';
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Home() {
   const { isAuthenticated } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (typeof window !== 'undefined') { // Ensure this runs only in the browser
+    console.log("🏠 Home page - Estado de autenticação:", isAuthenticated);
+    if (typeof window !== "undefined") {
+      // Ensure this runs only in the browser
       if (isAuthenticated) {
-        router.push('/dashboard');
+        console.log("✅ Usuário autenticado - redirecionando para /dashboard");
+        router.push("/dashboard");
       } else {
-        router.push('/login');
+        console.log("❌ Usuário não autenticado - redirecionando para /login");
+        router.push("/login");
       }
     }
   }, [isAuthenticated, router]);

@@ -33,9 +33,7 @@ const mapFromBackend = (backendCliente: BackendCliente): Client => ({
 
 const fetchClients = async (): Promise<Client[]> => {
   try {
-    const response = await httpClient.get<BackendCliente[]>(
-      "/cliente/listar"
-    );
+    const response = await httpClient.get<BackendCliente[]>("/cliente/listar");
     if (response && response.length > 0) {
       return response.map(mapFromBackend);
     }

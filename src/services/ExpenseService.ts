@@ -7,10 +7,7 @@ const fetchExpenses = async (): Promise<Expense[]> => {
 };
 
 const saveExpense = async (expense: Omit<Expense, "id">): Promise<Expense> => {
-  const response = await httpClient.post<Expense>(
-    "/despesa/salvar",
-    expense
-  );
+  const response = await httpClient.post<Expense>("/despesa/salvar", expense);
   return response;
 };
 

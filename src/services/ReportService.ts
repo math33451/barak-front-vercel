@@ -8,9 +8,7 @@ import {
 import { httpClient } from "@/infra/httpClient";
 
 const fetchReportSummary = async (): Promise<ReportSummary> => {
-  const response = await httpClient.get<ReportSummary>(
-    "/relatorios/resumo"
-  );
+  const response = await httpClient.get<ReportSummary>("/relatorios/resumo");
   return (
     response || {
       totalSales: 0,

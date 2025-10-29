@@ -76,20 +76,20 @@ export const useReportViewModel = (): ReportViewModel => {
   } = useFinancingByBank();
 
   // Simulation states
-  const [clientes, setClientes] = useState(summary?.newClients || 150);
-  const [taxaConversao, setTaxaConversao] = useState(0.6); // 60%
+  const [clientes, setClientes] = useState(summary?.newClients || 80); // 80 leads/mês é realista para concessionária
+  const [taxaConversao, setTaxaConversao] = useState(0.05); // 5% - Taxa realista para concessionárias
   const [ticketMedio, setTicketMedio] = useState(() => {
     if (summary && summary.vehiclesSold > 0) {
       return Math.round(summary.totalSales / summary.vehiclesSold);
     }
-    return 80000;
+    return 85000; // R$ 85k é mais realista para ticket médio
   });
-  const [percentualFinanciamento, setPercentualFinanciamento] = useState(0.22); // 22%
+  const [percentualFinanciamento, setPercentualFinanciamento] = useState(0.75); // 75% é realista no Brasil
 
   // Update simulation defaults when data loads
   useMemo(() => {
     if (summary) {
-      setClientes(summary.newClients || 150);
+      setClientes(summary.newClients || 80); // Ajustado para realidade
       if (summary.vehiclesSold > 0) {
         setTicketMedio(Math.round(summary.totalSales / summary.vehiclesSold));
       }
