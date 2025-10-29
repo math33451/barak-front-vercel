@@ -29,7 +29,21 @@ export default function Financiamento() {
       render: (agreement) => {
         const agr = agreement as Agreement;
         const value = agr.return1 || 0;
-        return `${(value * 100).toFixed(2)}%`;
+        const percentage = (value * 100).toFixed(2);
+        // Valor base médio de financiamento usado para cálculo (R$ 50.000)
+        const baseValue = 50000;
+        const monetaryValue = (value * baseValue).toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        });
+        return (
+          <div className="flex flex-col">
+            <span className="font-semibold text-green-600">
+              {monetaryValue}
+            </span>
+            <span className="text-xs text-gray-500">({percentage}%)</span>
+          </div>
+        );
       },
     },
     {
@@ -38,7 +52,20 @@ export default function Financiamento() {
       render: (agreement) => {
         const agr = agreement as Agreement;
         const value = agr.return2 || 0;
-        return `${(value * 100).toFixed(2)}%`;
+        const percentage = (value * 100).toFixed(2);
+        const baseValue = 50000;
+        const monetaryValue = (value * baseValue).toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        });
+        return (
+          <div className="flex flex-col">
+            <span className="font-semibold text-green-600">
+              {monetaryValue}
+            </span>
+            <span className="text-xs text-gray-500">({percentage}%)</span>
+          </div>
+        );
       },
     },
     {
@@ -47,7 +74,20 @@ export default function Financiamento() {
       render: (agreement) => {
         const agr = agreement as Agreement;
         const value = agr.return3 || 0;
-        return `${(value * 100).toFixed(2)}%`;
+        const percentage = (value * 100).toFixed(2);
+        const baseValue = 50000;
+        const monetaryValue = (value * baseValue).toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        });
+        return (
+          <div className="flex flex-col">
+            <span className="font-semibold text-green-600">
+              {monetaryValue}
+            </span>
+            <span className="text-xs text-gray-500">({percentage}%)</span>
+          </div>
+        );
       },
     },
     {
@@ -56,7 +96,20 @@ export default function Financiamento() {
       render: (agreement) => {
         const agr = agreement as Agreement;
         const value = agr.return4 || 0;
-        return `${(value * 100).toFixed(2)}%`;
+        const percentage = (value * 100).toFixed(2);
+        const baseValue = 50000;
+        const monetaryValue = (value * baseValue).toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        });
+        return (
+          <div className="flex flex-col">
+            <span className="font-semibold text-green-600">
+              {monetaryValue}
+            </span>
+            <span className="text-xs text-gray-500">({percentage}%)</span>
+          </div>
+        );
       },
     },
     {
@@ -65,7 +118,20 @@ export default function Financiamento() {
       render: (agreement) => {
         const agr = agreement as Agreement;
         const value = agr.return5 || 0;
-        return `${(value * 100).toFixed(2)}%`;
+        const percentage = (value * 100).toFixed(2);
+        const baseValue = 50000;
+        const monetaryValue = (value * baseValue).toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        });
+        return (
+          <div className="flex flex-col">
+            <span className="font-semibold text-green-600">
+              {monetaryValue}
+            </span>
+            <span className="text-xs text-gray-500">({percentage}%)</span>
+          </div>
+        );
       },
     },
     {

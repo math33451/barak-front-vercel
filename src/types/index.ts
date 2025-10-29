@@ -45,6 +45,7 @@ export interface Bank {
   id: string;
   name: string;
   code: string;
+  totalFinancing?: number; // Total em reais de financiamentos deste banco
 }
 
 export interface ReportSummary {

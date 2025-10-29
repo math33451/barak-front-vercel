@@ -68,6 +68,16 @@ export default function Sidebar({
       icon: <Landmark className="h-5 w-5" />,
     },
     {
+      href: "/financiamento",
+      label: "Financiamento",
+      icon: <CreditCard className="h-5 w-5" />,
+    },
+    {
+      href: "/retorno",
+      label: "Retorno",
+      icon: <Repeat className="h-5 w-5" />,
+    },
+    {
       href: "/clientes",
       label: "Clientes",
       icon: <Users className="h-5 w-5" />,
@@ -83,11 +93,6 @@ export default function Sidebar({
       icon: <Receipt className="h-5 w-5" />,
     },
     {
-      href: "/financiamento",
-      label: "Financiamento",
-      icon: <CreditCard className="h-5 w-5" />,
-    },
-    {
       href: "/funcionarios",
       label: "Funcionários",
       icon: <UserCheck className="h-5 w-5" />,
@@ -96,11 +101,6 @@ export default function Sidebar({
       href: "/propostas",
       label: "Propostas",
       icon: <FileText className="h-5 w-5" />,
-    },
-    {
-      href: "/retorno",
-      label: "Retorno",
-      icon: <Repeat className="h-5 w-5" />,
     },
     {
       href: "/unidades",

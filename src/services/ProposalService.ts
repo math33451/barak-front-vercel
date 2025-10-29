@@ -86,7 +86,7 @@ const mapFromBackend = (backendProposta: BackendProposta): Proposal => {
 const fetchProposals = async (): Promise<Proposal[]> => {
   try {
     const response = await httpClient.get<BackendProposta[]>(
-      "/rest/proposta/listar"
+      "/proposta/listar"
     );
 
     if (!response || !Array.isArray(response)) {
@@ -124,7 +124,7 @@ const saveProposal = async (
   try {
     const backendData = mapToBackend(proposal);
     const response = await httpClient.post<BackendProposta>(
-      "/rest/proposta",
+      "/proposta",
       backendData
     );
     return mapFromBackend(response);
@@ -135,11 +135,11 @@ const saveProposal = async (
 };
 
 const approveProposal = async (proposalId: string): Promise<void> => {
-  await httpClient.get<void>(`/rest/proposta/aprovar/${proposalId}`);
+  await httpClient.get<void>(`/proposta/aprovar/${proposalId}`);
 };
 
 const cancelProposal = async (proposalId: string): Promise<void> => {
-  await httpClient.get<void>(`/rest/proposta/cancelar/${proposalId}`);
+  await httpClient.get<void>(`/proposta/cancelar/${proposalId}`);
 };
 
 export const ProposalService = {

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:8089";
+const API_BASE_URL = "https://barak-backend-665569303635.us-central1.run.app";
 
 // Função para pegar o token
 const getToken = () => {

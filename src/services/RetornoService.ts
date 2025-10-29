@@ -15,7 +15,7 @@ interface BackendBanco {
 const fetchAgreements = async (): Promise<Agreement[]> => {
   try {
     // Buscar apenas bancos (retornos são propriedades dos bancos)
-    const bancos = await httpClient.get<BackendBanco[]>("/rest/banco/listar");
+    const bancos = await httpClient.get<BackendBanco[]>("/banco/listar");
 
     // Mapear todos os bancos válidos para o formato do frontend
     const result = bancos
@@ -45,10 +45,7 @@ const fetchAgreements = async (): Promise<Agreement[]> => {
 
 const updateRetorno = async (retorno: Retorno): Promise<Retorno> => {
   try {
-    const updatedRetorno = await httpClient.post<Retorno>(
-      "/rest/retorno",
-      retorno
-    );
+    const updatedRetorno = await httpClient.post<Retorno>("/retorno", retorno);
     return updatedRetorno;
   } catch (error) {
     console.error("Erro ao atualizar retorno:", error);

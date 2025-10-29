@@ -1,6 +1,12 @@
-'use client';
+"use client";
 
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -16,21 +22,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem('jwt_token');
+    console.log("🔄 AuthContext useEffect - verificando token no localStorage");
+    const storedToken = localStorage.getItem("jwt_token");
     if (storedToken) {
+      console.log("✅ Token encontrado no localStorage");
       setToken(storedToken);
       setIsAuthenticated(true);
+    } else {
+      console.log("❌ Nenhum token encontrado no localStorage");
     }
   }, []);
 
   const login = (newToken: string) => {
-    localStorage.setItem('jwt_token', newToken);
+    console.log(
+      "🔐 Login chamado com token:",
+      newToken ? "token válido" : "token inválido"
+    );
+    localStorage.setItem("jwt_token", newToken);
     setToken(newToken);
     setIsAuthenticated(true);
+    console.log("✅ Estado de autenticação atualizado:", true);
   };
 
   const logout = () => {
-    localStorage.removeItem('jwt_token');
+    localStorage.removeItem("jwt_token");
     setToken(null);
     setIsAuthenticated(false);
   };
@@ -45,7 +60,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

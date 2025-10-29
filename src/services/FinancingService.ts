@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Agreement } from "@/types";
 
-const API_BASE_URL = "http://localhost:8089";
+const API_BASE_URL = "https://barak-backend-665569303635.us-central1.run.app";
 
 // Backend types
 interface BackendAcordo {
@@ -33,10 +33,10 @@ const fetchAgreements = async (): Promise<Agreement[]> => {
   try {
     // Buscar acordos e bancos
     const [acordosResponse, bancosResponse] = await Promise.all([
-      axios.get<BackendAcordo[]>(`${API_BASE_URL}/rest/acordo/listar`, {
+      axios.get<BackendAcordo[]>(`${API_BASE_URL}/acordo/listar`, {
         headers: getHeaders(),
       }),
-      axios.get<BackendBanco[]>(`${API_BASE_URL}/rest/banco/listar`, {
+      axios.get<BackendBanco[]>(`${API_BASE_URL}/banco/listar`, {
         headers: getHeaders(),
       }),
     ]);
@@ -93,14 +93,14 @@ const saveAgreement = async (
     };
 
     const response = await axios.post<BackendAcordo>(
-      `${API_BASE_URL}/rest/acordo/salvar`,
+      `${API_BASE_URL}/acordo/salvar`,
       backendData,
       { headers: getHeaders() }
     );
 
     // Buscar todos os bancos para encontrar o específico
     const bancosResponse = await axios.get<BackendBanco[]>(
-      `${API_BASE_URL}/rest/banco/listar`,
+      `${API_BASE_URL}/banco/listar`,
       { headers: getHeaders() }
     );
     const banco = bancosResponse.data.find(
@@ -127,10 +127,9 @@ const saveAgreement = async (
 
 const deleteAgreement = async (agreementId: string): Promise<void> => {
   try {
-    await axios.delete<void>(
-      `${API_BASE_URL}/rest/acordo/delete/${agreementId}`,
-      { headers: getHeaders() }
-    );
+    await axios.delete<void>(`${API_BASE_URL}/acordo/delete/${agreementId}`, {
+      headers: getHeaders(),
+    });
   } catch (error) {
     console.error("Error deleting agreement:", error);
     throw error;
