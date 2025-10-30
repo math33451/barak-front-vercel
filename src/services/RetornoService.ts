@@ -45,10 +45,7 @@ const fetchAgreements = async (): Promise<Agreement[]> => {
 
 const updateRetorno = async (retorno: Retorno): Promise<Retorno> => {
   try {
-    const updatedRetorno = await httpClient.post<Retorno>(
-      "/retorno",
-      retorno
-    );
+    const updatedRetorno = await httpClient.post<Retorno>("/retorno", retorno);
     return updatedRetorno;
   } catch (error) {
     console.error("Erro ao atualizar retorno:", error);

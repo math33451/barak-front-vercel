@@ -127,10 +127,9 @@ const saveAgreement = async (
 
 const deleteAgreement = async (agreementId: string): Promise<void> => {
   try {
-    await axios.delete<void>(
-      `${API_BASE_URL}/acordo/delete/${agreementId}`,
-      { headers: getHeaders() }
-    );
+    await axios.delete<void>(`${API_BASE_URL}/acordo/delete/${agreementId}`, {
+      headers: getHeaders(),
+    });
   } catch (error) {
     console.error("Error deleting agreement:", error);
     throw error;

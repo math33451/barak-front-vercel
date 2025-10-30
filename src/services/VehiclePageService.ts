@@ -7,10 +7,7 @@ const fetchVehicles = async (): Promise<Vehicle[]> => {
 };
 
 const saveVehicle = async (vehicle: Omit<Vehicle, "id">): Promise<Vehicle> => {
-  const response = await httpClient.post<Vehicle>(
-    "/veiculo/salvar",
-    vehicle
-  );
+  const response = await httpClient.post<Vehicle>("/veiculo/salvar", vehicle);
   return response;
 };
 
