@@ -179,3 +179,40 @@ export interface Proposal {
   client: Client;
   vehicle: Vehicle;
 }
+
+// Interface para vendas finalizadas (backend: VendaMinimalProjection)
+export interface VendaFinalizada {
+  id: number;
+  dataVenda: string; // ISO date string
+  dataAtualizacao: string; // ISO date string
+  valorPropostaReal: number;
+}
+
+// Interface completa da proposta (backend: PropostaDTO)
+export interface PropostaCompleta {
+  id: number;
+  idVendedor: number;
+  idUnidadeEmpresa?: number;
+  dataVenda: string; // ISO date string
+  dataAtualizacao: string; // ISO date string
+  idCliente: number;
+  valorPropostaReal: number;
+  valorPropostaArrecadadoILA: number;
+  isFinanciado: "SIM" | "NAO";
+  idBanco: number;
+  retornoSelecionado: number;
+  multiplicadorRetornoBanco: number;
+  valorRetorno: number;
+  valorPlus?: number;
+  status: "PENDENTE" | "FINALIZADA" | "CANCELADA";
+}
+
+// Interface para métricas agregadas calculadas a partir das vendas reais
+export interface MetricasVendasReais {
+  ticketMedio: number;
+  faturamentoTotal: number;
+  quantidadeVendas: number;
+  percentualFinanciamento: number;
+  quantidadeFinanciadas: number;
+  quantidadeAVista: number;
+}

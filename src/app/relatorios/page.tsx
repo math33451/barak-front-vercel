@@ -14,7 +14,7 @@ import {
   ArrowUpRight,
   ArrowDownRight,
 } from "lucide-react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useReportViewModel } from "@/viewmodels/useReportViewModel";
 import { Line, Bar, Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, registerables } from "chart.js";
@@ -171,6 +171,8 @@ export default function Relatorios() {
     setTaxaConversao,
     setTicketMedio,
     setPercentualFinanciamento,
+    metricasReais,
+    tamanhoEquipeReal,
   } = useReportViewModel();
 
   const [projectionPeriod, setProjectionPeriod] = useState<
@@ -252,12 +254,19 @@ export default function Relatorios() {
   const [investimentoMarketing, setInvestimentoMarketing] = useState(0.02); // 2% - Mais realista
   const [sazonalidadeMultiplier, setSazonalidadeMultiplier] = useState(1.0);
   const [concorrenciaIntensidade, setConcorrenciaIntensidade] = useState(0.5); // Média
-  const [tamanhoEquipe, setTamanhoEquipe] = useState(4); // 4 vendedores é mais comum
+  const [tamanhoEquipe, setTamanhoEquipe] = useState(() => tamanhoEquipeReal || 4); // Usar valor real do backend ou fallback para 4
   const [prazoMedioFinanciamento, setPrazoMedioFinanciamento] = useState(60); // 60 meses é mais comum no Brasil
   const [jurosMedioFinanciamento, setJurosMedioFinanciamento] =
     useState(0.0189); // 1.89% ao mês (taxa típica CDC)
   const [percentualEntrada, setPercentualEntrada] = useState(0.25); // 25% - Mais realista
   const [custoOperacional, setCustoOperacional] = useState(0.05); // 5% - Mais realista
+
+  // Atualizar tamanho da equipe quando dados reais carregarem
+  useEffect(() => {
+    if (tamanhoEquipeReal !== null && tamanhoEquipeReal > 0) {
+      setTamanhoEquipe(tamanhoEquipeReal);
+    }
+  }, [tamanhoEquipeReal]);
 
   // Novas métricas críticas para concessionárias
   const [estoqueAtual, setEstoqueAtual] = useState(30); // 30 veículos em estoque
@@ -1012,9 +1021,16 @@ export default function Relatorios() {
 
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-gray-700">
-                  Tamanho da Equipe
-                </label>
+                <div className="flex items-center gap-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    Tamanho da Equipe
+                  </label>
+                  {tamanhoEquipeReal && (
+                    <span className="px-2 py-0.5 text-[10px] font-semibold bg-green-100 text-green-700 rounded-full">
+                      REAL
+                    </span>
+                  )}
+                </div>
                 <input
                   type="number"
                   min={0}
@@ -1037,6 +1053,11 @@ export default function Relatorios() {
               />
               <p className="text-xs text-gray-500">
                 1-20 vendedores (pequena: 2-5, média: 6-10)
+                {tamanhoEquipeReal && (
+                  <span className="ml-1 font-semibold text-green-600">
+                    • Quantidade real do backend
+                  </span>
+                )}
               </p>
             </div>
           </div>
@@ -1272,9 +1293,16 @@ export default function Relatorios() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-gray-700">
-                  Ticket Médio
-                </label>
+                <div className="flex items-center gap-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    Ticket Médio
+                  </label>
+                  {metricasReais && (
+                    <span className="px-2 py-0.5 text-[10px] font-semibold bg-green-100 text-green-700 rounded-full">
+                      REAL
+                    </span>
+                  )}
+                </div>
                 <div className="flex items-center gap-1">
                   <span className="text-xs text-gray-500">R$</span>
                   <input
@@ -1306,6 +1334,11 @@ export default function Relatorios() {
               />
               <p className="text-xs text-gray-500">
                 R$ 40k-250k (popular: 50-90k, premium: 120k+)
+                {metricasReais && (
+                  <span className="ml-1 font-semibold text-green-600">
+                    • Valor real do backend
+                  </span>
+                )}
               </p>
             </div>
 
@@ -1381,9 +1414,16 @@ export default function Relatorios() {
 
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-gray-700">
-                  % Financiado
-                </label>
+                <div className="flex items-center gap-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    % Financiado
+                  </label>
+                  {metricasReais && (
+                    <span className="px-2 py-0.5 text-[10px] font-semibold bg-green-100 text-green-700 rounded-full">
+                      REAL
+                    </span>
+                  )}
+                </div>
                 <div className="flex items-center gap-1">
                   <input
                     type="number"
@@ -1414,6 +1454,11 @@ export default function Relatorios() {
               />
               <p className="text-xs text-gray-500">
                 50-95% (Brasil: 70-85% das vendas são financiadas)
+                {metricasReais && (
+                  <span className="ml-1 font-semibold text-green-600">
+                    • Valor real do backend
+                  </span>
+                )}
               </p>
             </div>
           </div>

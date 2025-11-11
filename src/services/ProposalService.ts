@@ -1,6 +1,9 @@
 import { Proposal } from "@/types";
 import { httpClient } from "@/infra/httpClient";
 
+// Interface VendaFinalizada importada do types
+import type { VendaFinalizada, PropostaCompleta } from "@/types";
+
 // Interface baseada no DTO real do backend
 interface BackendProposta {
   id?: number;
@@ -142,9 +145,25 @@ const cancelProposal = async (proposalId: string): Promise<void> => {
   await httpClient.get<void>(`/proposta/cancelar/${proposalId}`);
 };
 
+// Buscar vendas finalizadas com dados mínimos (para relatórios)
+const fetchVendasFinalizadas = async (): Promise<VendaFinalizada[]> => {
+  const response = await httpClient.get<VendaFinalizada[]>(
+    "/proposta/finalizadas"
+  );
+  return response || [];
+};
+
+// Buscar todas as propostas completas (para análises detalhadas)
+const fetchPropostasCompletas = async (): Promise<PropostaCompleta[]> => {
+  const response = await httpClient.get<PropostaCompleta[]>("/proposta/listar");
+  return response || [];
+};
+
 export const ProposalService = {
   fetchProposals,
   saveProposal,
   approveProposal,
   cancelProposal,
+  fetchVendasFinalizadas,
+  fetchPropostasCompletas,
 };
