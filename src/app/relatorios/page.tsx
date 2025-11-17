@@ -254,7 +254,9 @@ export default function Relatorios() {
   const [investimentoMarketing, setInvestimentoMarketing] = useState(0.02); // 2% - Mais realista
   const [sazonalidadeMultiplier, setSazonalidadeMultiplier] = useState(1.0);
   const [concorrenciaIntensidade, setConcorrenciaIntensidade] = useState(0.5); // Média
-  const [tamanhoEquipe, setTamanhoEquipe] = useState(() => tamanhoEquipeReal || 4); // Usar valor real do backend ou fallback para 4
+  const [tamanhoEquipe, setTamanhoEquipe] = useState(
+    () => tamanhoEquipeReal || 4,
+  ); // Usar valor real do backend ou fallback para 4
   const [prazoMedioFinanciamento, setPrazoMedioFinanciamento] = useState(60); // 60 meses é mais comum no Brasil
   const [jurosMedioFinanciamento, setJurosMedioFinanciamento] =
     useState(0.0189); // 1.89% ao mês (taxa típica CDC)
@@ -329,13 +331,13 @@ export default function Relatorios() {
   // Calcular leads proporcionalmente aos dias úteis (vendas online/digitais)
   const leadsPorDiaUtil = clientes / 22;
   const projectedLeads = Math.round(
-    leadsPorDiaUtil * diasUteis * marketingImpact
+    leadsPorDiaUtil * diasUteis * marketingImpact,
   );
 
   // Calcular passagens proporcionalmente aos dias úteis (visitas físicas)
   const passagensPorDiaUtil = numeroPassagens / 22;
   const projectedPassagens = Math.round(
-    passagensPorDiaUtil * diasUteis * marketingImpact
+    passagensPorDiaUtil * diasUteis * marketingImpact,
   );
 
   // Calcular prospecção (contatos diretos dos vendedores)
@@ -531,7 +533,7 @@ export default function Relatorios() {
             })}`}
             subtitle={`Previsão para ${projectionPeriod} • Atual: R$ ${currentRevenue.toLocaleString(
               "pt-BR",
-              { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+              { minimumFractionDigits: 2, maximumFractionDigits: 2 },
             )}`}
             icon={<DollarSign className="w-6 h-6 text-white" />}
             trend={{
@@ -554,7 +556,7 @@ export default function Relatorios() {
               maximumFractionDigits: 2,
             })}`}
             subtitle={`Margem de ${Math.round(
-              margemRealizada * 100
+              margemRealizada * 100,
             )}% após custos`}
             icon={<TrendingUp className="w-5 h-5 text-white" />}
             trend={{
@@ -603,8 +605,8 @@ export default function Relatorios() {
                 taxaConversaoPassagem > 0.25
                   ? 18
                   : taxaConversaoPassagem >= 0.15
-                  ? 10
-                  : -6,
+                    ? 10
+                    : -6,
               isPositive: taxaConversaoPassagem >= 0.15,
             }}
             bgGradient="bg-gradient-to-br from-indigo-600 via-indigo-500 to-blue-600"
@@ -622,8 +624,8 @@ export default function Relatorios() {
                 taxaConversaoProspeccao > 0.04
                   ? 12
                   : taxaConversaoProspeccao >= 0.02
-                  ? 6
-                  : -4,
+                    ? 6
+                    : -4,
               isPositive: taxaConversaoProspeccao >= 0.02,
             }}
             bgGradient="bg-gradient-to-br from-green-600 via-green-500 to-emerald-700"
@@ -653,7 +655,7 @@ export default function Relatorios() {
                     key={period.key}
                     onClick={() =>
                       setProjectionPeriod(
-                        period.key as "1M" | "3M" | "6M" | "1Y"
+                        period.key as "1M" | "3M" | "6M" | "1Y",
                       )
                     }
                     className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
@@ -1021,16 +1023,9 @@ export default function Relatorios() {
 
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <label className="text-sm font-medium text-gray-700">
-                    Tamanho da Equipe
-                  </label>
-                  {tamanhoEquipeReal && (
-                    <span className="px-2 py-0.5 text-[10px] font-semibold bg-green-100 text-green-700 rounded-full">
-                      REAL
-                    </span>
-                  )}
-                </div>
+                <label className="text-sm font-medium text-gray-700">
+                  Tamanho da Equipe
+                </label>
                 <input
                   type="number"
                   min={0}
@@ -1053,11 +1048,6 @@ export default function Relatorios() {
               />
               <p className="text-xs text-gray-500">
                 1-20 vendedores (pequena: 2-5, média: 6-10)
-                {tamanhoEquipeReal && (
-                  <span className="ml-1 font-semibold text-green-600">
-                    • Quantidade real do backend
-                  </span>
-                )}
               </p>
             </div>
           </div>
@@ -1293,16 +1283,9 @@ export default function Relatorios() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <label className="text-sm font-medium text-gray-700">
-                    Ticket Médio
-                  </label>
-                  {metricasReais && (
-                    <span className="px-2 py-0.5 text-[10px] font-semibold bg-green-100 text-green-700 rounded-full">
-                      REAL
-                    </span>
-                  )}
-                </div>
+                <label className="text-sm font-medium text-gray-700">
+                  Ticket Médio
+                </label>
                 <div className="flex items-center gap-1">
                   <span className="text-xs text-gray-500">R$</span>
                   <input
@@ -1334,11 +1317,6 @@ export default function Relatorios() {
               />
               <p className="text-xs text-gray-500">
                 R$ 40k-250k (popular: 50-90k, premium: 120k+)
-                {metricasReais && (
-                  <span className="ml-1 font-semibold text-green-600">
-                    • Valor real do backend
-                  </span>
-                )}
               </p>
             </div>
 
@@ -1414,16 +1392,9 @@ export default function Relatorios() {
 
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <label className="text-sm font-medium text-gray-700">
-                    % Financiado
-                  </label>
-                  {metricasReais && (
-                    <span className="px-2 py-0.5 text-[10px] font-semibold bg-green-100 text-green-700 rounded-full">
-                      REAL
-                    </span>
-                  )}
-                </div>
+                <label className="text-sm font-medium text-gray-700">
+                  % Financiado
+                </label>
                 <div className="flex items-center gap-1">
                   <input
                     type="number"
@@ -1454,11 +1425,6 @@ export default function Relatorios() {
               />
               <p className="text-xs text-gray-500">
                 50-95% (Brasil: 70-85% das vendas são financiadas)
-                {metricasReais && (
-                  <span className="ml-1 font-semibold text-green-600">
-                    • Valor real do backend
-                  </span>
-                )}
               </p>
             </div>
           </div>
@@ -1656,8 +1622,8 @@ export default function Relatorios() {
                 {concorrenciaIntensidade < 0.35
                   ? "Baixa"
                   : concorrenciaIntensidade < 0.65
-                  ? "Média"
-                  : "Alta"}
+                    ? "Média"
+                    : "Alta"}
               </p>
             </div>
 
@@ -1694,8 +1660,8 @@ export default function Relatorios() {
                 {sazonalidadeMultiplier < 0.85
                   ? "Baixa Temporada"
                   : sazonalidadeMultiplier <= 1.15
-                  ? "Normal"
-                  : "Alta Temporada"}
+                    ? "Normal"
+                    : "Alta Temporada"}
               </p>
             </div>
           </div>
@@ -1707,7 +1673,7 @@ export default function Relatorios() {
             title="Giro de Estoque"
             value={`${giroEstoqueMensal.toFixed(2)}x/mês`}
             subtitle={`${giroEstoqueAnual.toFixed(
-              1
+              1,
             )}x/ano • Estoque: ${estoqueAtual} un • ${
               giroEstoqueMensal >= 0.5 ? "✅ Excelente" : "⚠️ Baixo"
             }`}
@@ -1717,8 +1683,8 @@ export default function Relatorios() {
                 giroEstoqueMensal >= 0.5
                   ? 20
                   : giroEstoqueMensal >= 0.3
-                  ? 5
-                  : -10,
+                    ? 5
+                    : -10,
               isPositive: giroEstoqueMensal >= 0.5,
             }}
             bgGradient="bg-gradient-to-br from-cyan-600 via-cyan-500 to-blue-600"
@@ -1732,7 +1698,7 @@ export default function Relatorios() {
             })}`}
             subtitle={`Custo aquisição por cliente • Investimento: R$ ${investimentoMarketingTotal.toLocaleString(
               "pt-BR",
-              { minimumFractionDigits: 0, maximumFractionDigits: 0 }
+              { minimumFractionDigits: 0, maximumFractionDigits: 0 },
             )}`}
             icon={<DollarSign className="w-5 h-5 text-white" />}
             trend={{
@@ -1749,7 +1715,7 @@ export default function Relatorios() {
               maximumFractionDigits: 2,
             })}`}
             subtitle={`${(comissaoVendedor * 100).toFixed(
-              1
+              1,
             )}% sobre vendas • R$ ${(
               custoComissoes / vendasFinaisAjustadas || 0
             ).toLocaleString("pt-BR", {
@@ -1771,10 +1737,10 @@ export default function Relatorios() {
               maximumFractionDigits: 2,
             })}`}
             subtitle={`Vendas + Pós-Venda (${(receitaPosVenda * 100).toFixed(
-              0
+              0,
             )}%) • Adicional: R$ ${receitaPosVendaTotal.toLocaleString(
               "pt-BR",
-              { minimumFractionDigits: 0, maximumFractionDigits: 0 }
+              { minimumFractionDigits: 0, maximumFractionDigits: 0 },
             )}`}
             icon={<TrendingUp className="w-5 h-5 text-white" />}
             trend={{
@@ -1974,22 +1940,22 @@ export default function Relatorios() {
                 taxaConversao < 0.03
                   ? "warning"
                   : taxaConversao > 0.08
-                  ? "success"
-                  : "info"
+                    ? "success"
+                    : "info"
               }
               title={
                 taxaConversao < 0.03
                   ? "Taxa de Conversão Baixa"
                   : taxaConversao > 0.08
-                  ? "Taxa de Conversão Excelente"
-                  : "Taxa de Conversão Normal"
+                    ? "Taxa de Conversão Excelente"
+                    : "Taxa de Conversão Normal"
               }
               message={
                 taxaConversao < 0.03
                   ? "Sua taxa está abaixo da média do setor (3-8% para concessionárias). Considere melhorar o processo de vendas e qualificação de leads."
                   : taxaConversao > 0.08
-                  ? "Sua taxa de conversão está acima da média do setor automotivo. Continue com as estratégias atuais!"
-                  : "Sua taxa de conversão está dentro do padrão esperado para concessionárias (3-8%)."
+                    ? "Sua taxa de conversão está acima da média do setor automotivo. Continue com as estratégias atuais!"
+                    : "Sua taxa de conversão está dentro do padrão esperado para concessionárias (3-8%)."
               }
               action="Ver Estratégias"
             />
@@ -2122,7 +2088,7 @@ export default function Relatorios() {
                 <span className="font-bold text-green-600">
                   {investimentoMarketingTotal > 0
                     ? Math.round(
-                        (lucroLiquido / investimentoMarketingTotal) * 100
+                        (lucroLiquido / investimentoMarketingTotal) * 100,
                       )
                     : 0}
                   %
@@ -2191,8 +2157,8 @@ export default function Relatorios() {
                     teamEfficiency > 1.2
                       ? "text-green-600"
                       : teamEfficiency > 1.0
-                      ? "text-yellow-600"
-                      : "text-red-600"
+                        ? "text-yellow-600"
+                        : "text-red-600"
                   }`}
                 >
                   {Math.round(teamEfficiency * 100)}%
@@ -2228,8 +2194,8 @@ export default function Relatorios() {
                     margemRealizada > 0.15
                       ? "text-green-600"
                       : margemRealizada > 0.1
-                      ? "text-yellow-600"
-                      : "text-red-600"
+                        ? "text-yellow-600"
+                        : "text-red-600"
                   }`}
                 >
                   {Math.round(margemRealizada * 100)}%
