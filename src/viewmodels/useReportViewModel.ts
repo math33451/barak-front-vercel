@@ -5,6 +5,7 @@ import {
   VehicleSalesByBrand,
   TopSeller,
   FinancingByBank,
+  MetricasVendasReais,
 } from "@/types";
 import {
   useReportSummary,
@@ -12,7 +13,10 @@ import {
   useVehicleSalesByBrand,
   useTopSellers,
   useFinancingByBank,
+  usePropostasCompletas,
 } from "@/hooks/useReports";
+import { useEmployees } from "@/hooks/useEntities";
+import { ReportAggregatorService } from "@/services/ReportAggregatorService";
 
 interface ReportViewModel {
   isLoading: boolean;
@@ -22,6 +26,10 @@ interface ReportViewModel {
   vehicleSalesByBrand: VehicleSalesByBrand[];
   topSellers: TopSeller[];
   financingByBank: FinancingByBank[];
+
+  // Real metrics from backend
+  metricasReais: MetricasVendasReais | null;
+  tamanhoEquipeReal: number | null;
 
   // Simulation states
   clientes: number;
@@ -74,6 +82,25 @@ export const useReportViewModel = (): ReportViewModel => {
     isLoading: financingLoading,
     error: financingError,
   } = useFinancingByBank();
+  
+  // Hook para dados reais do backend (propostas completas contém todos os dados necessários)
+  const {
+    data: propostasCompletas,
+    isLoading: propostasLoading,
+    error: propostasError,
+  } = usePropostasCompletas();
+
+  // Hook para buscar funcionários ativos (tamanho real da equipe)
+  const {
+    data: employeesData,
+    isLoading: employeesLoading,
+  } = useEmployees();
+
+  // Calcular tamanho real da equipe de funcionários ativos
+  const tamanhoEquipeReal = useMemo(() => {
+    if (!employeesData || employeesData.length === 0) return null;
+    return employeesData.filter(e => e.isActive !== false).length;
+  }, [employeesData]);
 
   // Simulation states
   const [clientes, setClientes] = useState(summary?.newClients || 80); // 80 leads/mês é realista para concessionária
@@ -86,6 +113,12 @@ export const useReportViewModel = (): ReportViewModel => {
   });
   const [percentualFinanciamento, setPercentualFinanciamento] = useState(0.75); // 75% é realista no Brasil
 
+  // Calculate real metrics from backend data
+  const metricasReais = useMemo(() => {
+    if (!propostasCompletas || propostasCompletas.length === 0) return null;
+    return ReportAggregatorService.calcularMetricasCompletas(propostasCompletas);
+  }, [propostasCompletas]);
+
   // Update simulation defaults when data loads
   useMemo(() => {
     if (summary) {
@@ -94,7 +127,13 @@ export const useReportViewModel = (): ReportViewModel => {
         setTicketMedio(Math.round(summary.totalSales / summary.vehiclesSold));
       }
     }
-  }, [summary]);
+    
+    // Se temos métricas reais, atualizar os valores padrão
+    if (metricasReais) {
+      setTicketMedio(metricasReais.ticketMedio);
+      setPercentualFinanciamento(metricasReais.percentualFinanciamento);
+    }
+  }, [summary, metricasReais]);
 
   // Determine loading and error states
   const isLoading =
@@ -102,13 +141,16 @@ export const useReportViewModel = (): ReportViewModel => {
     salesLoading ||
     vehiclesLoading ||
     sellersLoading ||
-    financingLoading;
+    financingLoading ||
+    propostasLoading ||
+    employeesLoading;
   const error =
     summaryError ||
     salesError ||
     vehiclesError ||
     sellersError ||
-    financingError;
+    financingError ||
+    propostasError;
 
   // Calculated simulation values using useMemo for performance
   const vendasSimuladas = useMemo(
@@ -176,6 +218,8 @@ export const useReportViewModel = (): ReportViewModel => {
     vehicleSalesByBrand,
     topSellers,
     financingByBank,
+    metricasReais,
+    tamanhoEquipeReal,
 
     // Simulation states
     clientes,

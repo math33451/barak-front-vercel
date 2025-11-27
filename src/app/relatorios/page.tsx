@@ -14,7 +14,7 @@ import {
   ArrowUpRight,
   ArrowDownRight,
 } from "lucide-react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useReportViewModel } from "@/viewmodels/useReportViewModel";
 import { Line, Bar, Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, registerables } from "chart.js";
@@ -171,6 +171,8 @@ export default function Relatorios() {
     setTaxaConversao,
     setTicketMedio,
     setPercentualFinanciamento,
+    metricasReais,
+    tamanhoEquipeReal,
   } = useReportViewModel();
 
   const [projectionPeriod, setProjectionPeriod] = useState<
@@ -252,12 +254,21 @@ export default function Relatorios() {
   const [investimentoMarketing, setInvestimentoMarketing] = useState(0.02); // 2% - Mais realista
   const [sazonalidadeMultiplier, setSazonalidadeMultiplier] = useState(1.0);
   const [concorrenciaIntensidade, setConcorrenciaIntensidade] = useState(0.5); // Média
-  const [tamanhoEquipe, setTamanhoEquipe] = useState(4); // 4 vendedores é mais comum
+  const [tamanhoEquipe, setTamanhoEquipe] = useState(
+    () => tamanhoEquipeReal || 4,
+  ); // Usar valor real do backend ou fallback para 4
   const [prazoMedioFinanciamento, setPrazoMedioFinanciamento] = useState(60); // 60 meses é mais comum no Brasil
   const [jurosMedioFinanciamento, setJurosMedioFinanciamento] =
     useState(0.0189); // 1.89% ao mês (taxa típica CDC)
   const [percentualEntrada, setPercentualEntrada] = useState(0.25); // 25% - Mais realista
   const [custoOperacional, setCustoOperacional] = useState(0.05); // 5% - Mais realista
+
+  // Atualizar tamanho da equipe quando dados reais carregarem
+  useEffect(() => {
+    if (tamanhoEquipeReal !== null && tamanhoEquipeReal > 0) {
+      setTamanhoEquipe(tamanhoEquipeReal);
+    }
+  }, [tamanhoEquipeReal]);
 
   // Novas métricas críticas para concessionárias
   const [estoqueAtual, setEstoqueAtual] = useState(30); // 30 veículos em estoque
@@ -320,13 +331,13 @@ export default function Relatorios() {
   // Calcular leads proporcionalmente aos dias úteis (vendas online/digitais)
   const leadsPorDiaUtil = clientes / 22;
   const projectedLeads = Math.round(
-    leadsPorDiaUtil * diasUteis * marketingImpact
+    leadsPorDiaUtil * diasUteis * marketingImpact,
   );
 
   // Calcular passagens proporcionalmente aos dias úteis (visitas físicas)
   const passagensPorDiaUtil = numeroPassagens / 22;
   const projectedPassagens = Math.round(
-    passagensPorDiaUtil * diasUteis * marketingImpact
+    passagensPorDiaUtil * diasUteis * marketingImpact,
   );
 
   // Calcular prospecção (contatos diretos dos vendedores)
@@ -522,7 +533,7 @@ export default function Relatorios() {
             })}`}
             subtitle={`Previsão para ${projectionPeriod} • Atual: R$ ${currentRevenue.toLocaleString(
               "pt-BR",
-              { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+              { minimumFractionDigits: 2, maximumFractionDigits: 2 },
             )}`}
             icon={<DollarSign className="w-6 h-6 text-white" />}
             trend={{
@@ -545,7 +556,7 @@ export default function Relatorios() {
               maximumFractionDigits: 2,
             })}`}
             subtitle={`Margem de ${Math.round(
-              margemRealizada * 100
+              margemRealizada * 100,
             )}% após custos`}
             icon={<TrendingUp className="w-5 h-5 text-white" />}
             trend={{
@@ -594,8 +605,8 @@ export default function Relatorios() {
                 taxaConversaoPassagem > 0.25
                   ? 18
                   : taxaConversaoPassagem >= 0.15
-                  ? 10
-                  : -6,
+                    ? 10
+                    : -6,
               isPositive: taxaConversaoPassagem >= 0.15,
             }}
             bgGradient="bg-gradient-to-br from-indigo-600 via-indigo-500 to-blue-600"
@@ -613,8 +624,8 @@ export default function Relatorios() {
                 taxaConversaoProspeccao > 0.04
                   ? 12
                   : taxaConversaoProspeccao >= 0.02
-                  ? 6
-                  : -4,
+                    ? 6
+                    : -4,
               isPositive: taxaConversaoProspeccao >= 0.02,
             }}
             bgGradient="bg-gradient-to-br from-green-600 via-green-500 to-emerald-700"
@@ -644,7 +655,7 @@ export default function Relatorios() {
                     key={period.key}
                     onClick={() =>
                       setProjectionPeriod(
-                        period.key as "1M" | "3M" | "6M" | "1Y"
+                        period.key as "1M" | "3M" | "6M" | "1Y",
                       )
                     }
                     className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
@@ -1611,8 +1622,8 @@ export default function Relatorios() {
                 {concorrenciaIntensidade < 0.35
                   ? "Baixa"
                   : concorrenciaIntensidade < 0.65
-                  ? "Média"
-                  : "Alta"}
+                    ? "Média"
+                    : "Alta"}
               </p>
             </div>
 
@@ -1649,8 +1660,8 @@ export default function Relatorios() {
                 {sazonalidadeMultiplier < 0.85
                   ? "Baixa Temporada"
                   : sazonalidadeMultiplier <= 1.15
-                  ? "Normal"
-                  : "Alta Temporada"}
+                    ? "Normal"
+                    : "Alta Temporada"}
               </p>
             </div>
           </div>
@@ -1662,7 +1673,7 @@ export default function Relatorios() {
             title="Giro de Estoque"
             value={`${giroEstoqueMensal.toFixed(2)}x/mês`}
             subtitle={`${giroEstoqueAnual.toFixed(
-              1
+              1,
             )}x/ano • Estoque: ${estoqueAtual} un • ${
               giroEstoqueMensal >= 0.5 ? "✅ Excelente" : "⚠️ Baixo"
             }`}
@@ -1672,8 +1683,8 @@ export default function Relatorios() {
                 giroEstoqueMensal >= 0.5
                   ? 20
                   : giroEstoqueMensal >= 0.3
-                  ? 5
-                  : -10,
+                    ? 5
+                    : -10,
               isPositive: giroEstoqueMensal >= 0.5,
             }}
             bgGradient="bg-gradient-to-br from-cyan-600 via-cyan-500 to-blue-600"
@@ -1687,7 +1698,7 @@ export default function Relatorios() {
             })}`}
             subtitle={`Custo aquisição por cliente • Investimento: R$ ${investimentoMarketingTotal.toLocaleString(
               "pt-BR",
-              { minimumFractionDigits: 0, maximumFractionDigits: 0 }
+              { minimumFractionDigits: 0, maximumFractionDigits: 0 },
             )}`}
             icon={<DollarSign className="w-5 h-5 text-white" />}
             trend={{
@@ -1704,7 +1715,7 @@ export default function Relatorios() {
               maximumFractionDigits: 2,
             })}`}
             subtitle={`${(comissaoVendedor * 100).toFixed(
-              1
+              1,
             )}% sobre vendas • R$ ${(
               custoComissoes / vendasFinaisAjustadas || 0
             ).toLocaleString("pt-BR", {
@@ -1726,10 +1737,10 @@ export default function Relatorios() {
               maximumFractionDigits: 2,
             })}`}
             subtitle={`Vendas + Pós-Venda (${(receitaPosVenda * 100).toFixed(
-              0
+              0,
             )}%) • Adicional: R$ ${receitaPosVendaTotal.toLocaleString(
               "pt-BR",
-              { minimumFractionDigits: 0, maximumFractionDigits: 0 }
+              { minimumFractionDigits: 0, maximumFractionDigits: 0 },
             )}`}
             icon={<TrendingUp className="w-5 h-5 text-white" />}
             trend={{
@@ -1929,22 +1940,22 @@ export default function Relatorios() {
                 taxaConversao < 0.03
                   ? "warning"
                   : taxaConversao > 0.08
-                  ? "success"
-                  : "info"
+                    ? "success"
+                    : "info"
               }
               title={
                 taxaConversao < 0.03
                   ? "Taxa de Conversão Baixa"
                   : taxaConversao > 0.08
-                  ? "Taxa de Conversão Excelente"
-                  : "Taxa de Conversão Normal"
+                    ? "Taxa de Conversão Excelente"
+                    : "Taxa de Conversão Normal"
               }
               message={
                 taxaConversao < 0.03
                   ? "Sua taxa está abaixo da média do setor (3-8% para concessionárias). Considere melhorar o processo de vendas e qualificação de leads."
                   : taxaConversao > 0.08
-                  ? "Sua taxa de conversão está acima da média do setor automotivo. Continue com as estratégias atuais!"
-                  : "Sua taxa de conversão está dentro do padrão esperado para concessionárias (3-8%)."
+                    ? "Sua taxa de conversão está acima da média do setor automotivo. Continue com as estratégias atuais!"
+                    : "Sua taxa de conversão está dentro do padrão esperado para concessionárias (3-8%)."
               }
               action="Ver Estratégias"
             />
@@ -2077,7 +2088,7 @@ export default function Relatorios() {
                 <span className="font-bold text-green-600">
                   {investimentoMarketingTotal > 0
                     ? Math.round(
-                        (lucroLiquido / investimentoMarketingTotal) * 100
+                        (lucroLiquido / investimentoMarketingTotal) * 100,
                       )
                     : 0}
                   %
@@ -2146,8 +2157,8 @@ export default function Relatorios() {
                     teamEfficiency > 1.2
                       ? "text-green-600"
                       : teamEfficiency > 1.0
-                      ? "text-yellow-600"
-                      : "text-red-600"
+                        ? "text-yellow-600"
+                        : "text-red-600"
                   }`}
                 >
                   {Math.round(teamEfficiency * 100)}%
@@ -2183,8 +2194,8 @@ export default function Relatorios() {
                     margemRealizada > 0.15
                       ? "text-green-600"
                       : margemRealizada > 0.1
-                      ? "text-yellow-600"
-                      : "text-red-600"
+                        ? "text-yellow-600"
+                        : "text-red-600"
                   }`}
                 >
                   {Math.round(margemRealizada * 100)}%

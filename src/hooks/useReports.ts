@@ -1,5 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ReportService } from "@/services/ReportService";
+import { ProposalService } from "@/services/ProposalService";
 
 // Query keys - centralizados para consistency
 export const reportKeys = {
@@ -9,6 +10,8 @@ export const reportKeys = {
   vehiclesByBrand: () => [...reportKeys.all, "vehiclesByBrand"] as const,
   topSellers: () => [...reportKeys.all, "topSellers"] as const,
   financingByBank: () => [...reportKeys.all, "financingByBank"] as const,
+  vendasFinalizadas: () => [...reportKeys.all, "vendasFinalizadas"] as const,
+  propostasCompletas: () => [...reportKeys.all, "propostasCompletas"] as const,
 };
 
 // Hook para resumo do dashboard
@@ -58,6 +61,26 @@ export const useFinancingByBank = () => {
     queryFn: ReportService.fetchFinancingByBank,
     staleTime: 10 * 60 * 1000, // 10 minutos
     gcTime: 15 * 60 * 1000, // 15 minutos
+  });
+};
+
+// Hook para vendas finalizadas (dados reais do backend)
+export const useVendasFinalizadas = () => {
+  return useQuery({
+    queryKey: reportKeys.vendasFinalizadas(),
+    queryFn: ProposalService.fetchVendasFinalizadas,
+    staleTime: 2 * 60 * 1000, // 2 minutos - dados críticos para cálculos
+    gcTime: 5 * 60 * 1000, // 5 minutos
+  });
+};
+
+// Hook para todas propostas completas
+export const usePropostasCompletas = () => {
+  return useQuery({
+    queryKey: reportKeys.propostasCompletas(),
+    queryFn: ProposalService.fetchPropostasCompletas,
+    staleTime: 5 * 60 * 1000, // 5 minutos
+    gcTime: 10 * 60 * 1000, // 10 minutos
   });
 };
 
