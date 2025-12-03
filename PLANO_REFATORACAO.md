@@ -100,7 +100,7 @@ class HttpClient {
   private tokenKey: string;
 
   private constructor() {
-    this.baseURL = process.env.NEXT_PUBLIC_API_URL!;
+    this.baseURL = "https://barak-backend-665569303635.us-central1.run.app";
     this.tokenKey = "jwt_token";
   }
 

@@ -104,7 +104,7 @@ class TestService {
   async testCORS(): Promise<TestResult> {
     try {
       // Simplesmente teste se conseguimos fazer uma requisição (CORS será testado implicitamente)
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://barak-backend-665569303635.us-central1.run.app";
+      const apiUrl = "https://barak-backend-665569303635.us-central1.run.app";
 
       return {
         name: "CORS",

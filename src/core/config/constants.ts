@@ -7,7 +7,7 @@
 // CONFIGURAÇÕES DE API
 // ============================================
 export const API_CONFIG = {
-  BASE_URL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8089",
+  BASE_URL: "https://barak-backend-665569303635.us-central1.run.app",
   TIMEOUT: 30000, // 30 segundos
   RETRY_ATTEMPTS: 3,
 } as const;
