@@ -1,3 +1,3 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://barak-backend-665569303635.us-central1.run.app";
+const API_URL = "https://barak-backend-665569303635.us-central1.run.app";
 
 export { API_URL };
