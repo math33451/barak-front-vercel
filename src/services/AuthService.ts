@@ -1,7 +1,9 @@
 import axios from "axios";
 import { LoginDTO, RegisterDTO, UnidadeEmpresaDTO } from "@/types";
+import { storage } from "@/utils/storage";
+import { API_CONFIG } from "@/core/config/constants";
 
-const API_BASE_URL = "https://barak-backend-665569303635.us-central1.run.app";
+const API_BASE_URL = API_CONFIG.BASE_URL;
 
 const login = async (credentials: LoginDTO): Promise<string> => {
   const response = await axios.post(`${API_BASE_URL}/auth/login`, credentials, {
@@ -23,7 +25,7 @@ const register = async (userData: RegisterDTO): Promise<string> => {
 };
 
 const getUserUnits = async (idUser: number): Promise<UnidadeEmpresaDTO[]> => {
-  const token = localStorage.getItem("jwt_token");
+  const token = storage.getItem("jwt_token");
   const response = await axios.get(`${API_BASE_URL}/user-unidades/${idUser}`, {
     headers: {
       "Content-Type": "application/json",

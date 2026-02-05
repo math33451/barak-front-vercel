@@ -3,6 +3,7 @@
 import React from "react";
 import { Menu, Bell, Search, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { storage } from "@/utils/storage";
 
 type HeaderProps = {
   title: string;
@@ -13,7 +14,8 @@ export default function Header({ title, openSidebar }: HeaderProps) {
   const router = useRouter();
 
   const handleLogout = () => {
-    localStorage.removeItem("isAuthenticated");
+    storage.removeItem("isAuthenticated");
+    storage.removeItem("jwt_token");
     router.push("/login");
   };
 

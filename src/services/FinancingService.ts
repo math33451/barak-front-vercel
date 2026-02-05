@@ -1,7 +1,9 @@
 import axios from "axios";
 import { Agreement } from "@/types";
+import { storage } from "@/utils/storage";
+import { API_CONFIG } from "@/core/config/constants";
 
-const API_BASE_URL = "https://barak-backend-665569303635.us-central1.run.app";
+const API_BASE_URL = API_CONFIG.BASE_URL;
 
 // Backend types
 interface BackendAcordo {
@@ -22,7 +24,7 @@ interface BackendBanco {
 }
 
 const getHeaders = () => {
-  const token = localStorage.getItem("jwt_token");
+  const token = storage.getItem("jwt_token");
   return {
     "Content-Type": "application/json",
     ...(token && { Authorization: `Bearer ${token}` }),
@@ -63,12 +65,7 @@ const fetchAgreements = async (): Promise<Agreement[]> => {
           unitId: acordo.idUnidadeEmpresa?.toString() || "",
           bankId: acordo.idBanco.toString(),
           bankName: banco.nomeBanco || "",
-          return1: banco.retorno1 ?? 0,
-          return2: banco.retorno2 ?? 0,
-          return3: banco.retorno3 ?? 0,
-          return4: banco.retorno4 ?? 0,
-          return5: banco.retorno5 ?? 0,
-          percentage: acordo.percentualAcordo ?? 0,
+          agreementPercent: acordo.percentualAcordo ?? 0,
         } as Agreement;
       });
 
@@ -80,7 +77,7 @@ const fetchAgreements = async (): Promise<Agreement[]> => {
 };
 
 const saveAgreement = async (
-  agreement: Omit<Agreement, "id">
+  agreement: Omit<Agreement, "id">,
 ): Promise<Agreement> => {
   try {
     // Mapear para o formato do backend
@@ -89,22 +86,22 @@ const saveAgreement = async (
         ? parseInt(agreement.unitId as string)
         : null,
       idBanco: parseInt(agreement.bankId as string),
-      percentualAcordo: agreement.percentage,
+      percentualAcordo: agreement.agreementPercent,
     };
 
     const response = await axios.post<BackendAcordo>(
       `${API_BASE_URL}/acordo/salvar`,
       backendData,
-      { headers: getHeaders() }
+      { headers: getHeaders() },
     );
 
     // Buscar todos os bancos para encontrar o específico
     const bancosResponse = await axios.get<BackendBanco[]>(
       `${API_BASE_URL}/banco/listar`,
-      { headers: getHeaders() }
+      { headers: getHeaders() },
     );
     const banco = bancosResponse.data.find(
-      (b) => b.idBanco === response.data.idBanco
+      (b) => b.idBanco === response.data.idBanco,
     );
 
     return {
@@ -112,12 +109,7 @@ const saveAgreement = async (
       unitId: response.data.idUnidadeEmpresa?.toString() || "",
       bankId: response.data.idBanco.toString(),
       bankName: banco?.nomeBanco || "",
-      return1: banco?.retorno1 ?? 0,
-      return2: banco?.retorno2 ?? 0,
-      return3: banco?.retorno3 ?? 0,
-      return4: banco?.retorno4 ?? 0,
-      return5: banco?.retorno5 ?? 0,
-      percentage: response.data.percentualAcordo ?? 0,
+      agreementPercent: response.data.percentualAcordo ?? 0,
     } as Agreement;
   } catch (error) {
     console.error("Error saving agreement:", error);

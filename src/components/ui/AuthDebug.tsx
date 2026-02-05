@@ -2,15 +2,14 @@
 
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
+import { storage } from "@/utils/storage";
 
 export default function AuthDebug() {
   const { isAuthenticated, token } = useAuth();
   const [storageToken, setStorageToken] = useState<string | null>(null);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      setStorageToken(localStorage.getItem("jwt_token"));
-    }
+    setStorageToken(storage.getItem("jwt_token"));
   }, []);
 
   if (process.env.NODE_ENV !== "development") {

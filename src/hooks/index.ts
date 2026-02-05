@@ -19,6 +19,9 @@ export * from "./useOtherServices";
 export * from "./useToast";
 export * from "./useIntegrationTests";
 
+// Hooks de prefetch e cache
+export * from "./usePrefetch";
+
 // Entities (Clients, Banks, Employees)
 export * from "./useEntities";
 
@@ -46,3 +49,5 @@ export {
   useCreateBank,
   useCreateEmployee,
 } from "./useEntities";
+
+export { usePrefetch, useCacheStatus, useClearCache } from "./usePrefetch";

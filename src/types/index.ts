@@ -46,6 +46,11 @@ export interface Bank {
   name: string;
   code: string;
   totalFinancing?: number; // Total em reais de financiamentos deste banco
+  return1?: number;
+  return2?: number;
+  return3?: number;
+  return4?: number;
+  return5?: number;
 }
 
 export interface ReportSummary {
@@ -104,12 +109,8 @@ export interface Agreement {
   id: string;
   unitId: string;
   bankId: string;
-  bankName: string;
-  return1: number;
-  return2: number;
-  return3: number;
-  return4: number;
-  return5: number;
+  bankName?: string; // Optional as it might not be in the DTO directly but enriched
+  agreementPercent: number; // percentualAcordo from backend
 }
 
 export interface Expense {

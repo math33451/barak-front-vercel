@@ -1,26 +1,47 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { logger } from "@/utils/logger";
 
 export default function Home() {
   const { isAuthenticated } = useAuth();
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    console.log("🏠 Home page - Estado de autenticação:", isAuthenticated);
-    if (typeof window !== "undefined") {
-      // Ensure this runs only in the browser
-      if (isAuthenticated) {
-        console.log("✅ Usuário autenticado - redirecionando para /dashboard");
-        router.push("/dashboard");
-      } else {
-        console.log("❌ Usuário não autenticado - redirecionando para /login");
-        router.push("/login");
-      }
-    }
-  }, [isAuthenticated, router]);
+    setMounted(true);
+  }, []);
 
-  return null; // or a loading spinner
+  useEffect(() => {
+    if (!mounted) return;
+
+    logger.debug("Verificando autenticação", { isAuthenticated }, "HomePage");
+
+    if (isAuthenticated) {
+      logger.navigation("/", "/dashboard");
+      router.push("/dashboard");
+    } else {
+      logger.navigation("/", "/login");
+      router.push("/login");
+    }
+  }, [mounted, isAuthenticated, router]);
+
+  if (!mounted) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        Carregando...
+      </div>
+    );
+  }
+
+  return null;
 }

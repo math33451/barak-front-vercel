@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { FileText, Plus, Check, X, Edit } from "lucide-react";
 import { useProposalViewModel } from "@/viewmodels/useProposalViewModel";
@@ -22,6 +23,10 @@ export default function Propostas() {
     handleCancelProposal,
   } = useProposalViewModel();
 
+  const [activeTab, setActiveTab] = useState<
+    "ALL" | "PENDENTE" | "FINALIZADA" | "CANCELADA"
+  >("ALL");
+
   const columns: Column<Proposal>[] = [
     {
       key: "client",
@@ -42,6 +47,15 @@ export default function Propostas() {
           minimumFractionDigits: 2,
         })}`;
       },
+    },
+    {
+      key: "updatedAt",
+      title: "Data",
+      render: (_, p) => {
+          try {
+              return p.updatedAt ? new Date(p.updatedAt).toLocaleDateString("pt-BR") : "-";
+          } catch { return "-"; }
+      }
     },
     {
       key: "status",
@@ -137,13 +151,18 @@ export default function Propostas() {
     ? proposals.filter((p) => p && p.id)
     : [];
 
+  const filteredProposals = safeProposals.filter((p) => {
+    if (activeTab === "ALL") return true;
+    return p.status === activeTab;
+  });
+
   return (
     <DashboardLayout title="Propostas" activePath="/propostas">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-[color:var(--heading)] flex items-center gap-2">
             <FileText className="h-6 w-6" style={{ color: "var(--primary)" }} />
-            Propostas de Venda
+            Gestão de Propostas e Vendas
           </h2>
           <button
             onClick={() => openModal()}
@@ -152,15 +171,52 @@ export default function Propostas() {
             <Plus className="h-5 w-5" /> Nova Proposta
           </button>
         </div>
-        {safeProposals.length > 0 ? (
+
+        {/* Tabs */}
+        <div className="tabs tabs-boxed mb-6 bg-white border border-gray-100 p-1">
+          <a
+            className={`tab ${activeTab === "ALL" ? "tab-active" : ""}`}
+            onClick={() => setActiveTab("ALL")}
+          >
+            Todas
+          </a>
+          <a
+            className={`tab ${activeTab === "PENDENTE" ? "tab-active" : ""}`}
+            onClick={() => setActiveTab("PENDENTE")}
+          >
+            Pendentes
+          </a>
+          <a
+            className={`tab ${activeTab === "FINALIZADA" ? "tab-active" : ""}`}
+            onClick={() => setActiveTab("FINALIZADA")}
+          >
+            Vendas (Finalizadas)
+          </a>
+          <a
+            className={`tab ${activeTab === "CANCELADA" ? "tab-active" : ""}`}
+            onClick={() => setActiveTab("CANCELADA")}
+          >
+            Canceladas
+          </a>
+        </div>
+
+        {filteredProposals.length > 0 ? (
           <DataTable<Proposal>
             columns={columns}
-            data={safeProposals}
-            title="Lista de Propostas"
+            data={filteredProposals}
+            title={
+              activeTab === "ALL"
+                ? "Todas as Propostas"
+                : activeTab === "FINALIZADA"
+                ? "Histórico de Vendas"
+                : `Propostas ${activeTab.toLowerCase()}s`
+            }
           />
         ) : (
           <div className="overflow-x-auto rounded-lg border border-gray-100 bg-white shadow-sm">
-            <p className="p-4">Nenhuma proposta cadastrada.</p>
+            <p className="p-4 text-center text-gray-500">
+              Nenhum registro encontrado nesta categoria.
+            </p>
           </div>
         )}
       </div>
