@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { logger } from "@/utils/logger";
 
 export type Column<T> = {
   key: keyof T | string;
@@ -58,7 +59,11 @@ export default function DataTable<T extends ItemWithId>({
               data
                 .map((item, index) => {
                   if (!item || typeof item !== "object") {
-                    console.warn(`Item inválido no índice ${index}:`, item);
+                    logger.warn(
+                      `Item inválido no índice ${index}`,
+                      { item },
+                      "DataTable",
+                    );
                     return null;
                   }
 
@@ -74,18 +79,18 @@ export default function DataTable<T extends ItemWithId>({
                               {column.render
                                 ? column.render(
                                     item[column.key as keyof T],
-                                    item
+                                    item,
                                   )
                                 : item[column.key as keyof T] != null
-                                ? String(item[column.key as keyof T])
-                                : "-"}
+                                  ? String(item[column.key as keyof T])
+                                  : "-"}
                             </td>
                           );
                         } catch (error) {
-                          console.error(
-                            `Erro ao renderizar coluna ${String(column.key)}:`,
+                          logger.error(
+                            `Erro ao renderizar coluna ${String(column.key)}`,
                             error,
-                            item
+                            "DataTable",
                           );
                           return (
                             <td

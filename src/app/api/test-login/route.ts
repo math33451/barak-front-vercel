@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { logger } from "@/utils/logger";
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { email, password } = body;
 
-    console.log("🧪 Teste de login API - Email:", email);
+    logger.info("Teste de login via API", { email }, "TestLoginAPI");
 
     // Faz a requisição direta para o backend
     const response = await fetch("https://barak-backend-665569303635.us-central1.run.app/auth/login", {
@@ -16,11 +17,19 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({ email, password }),
     });
 
-    console.log("🧪 Status do backend:", response.status);
+    logger.info(
+      "Resposta do backend",
+      { status: response.status },
+      "TestLoginAPI",
+    );
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.log("🧪 Erro do backend:", errorText);
+      logger.warn(
+        "Erro do backend no teste de login",
+        { status: response.status, error: errorText },
+        "TestLoginAPI",
+      );
 
       return NextResponse.json(
         {
@@ -28,12 +37,16 @@ export async function POST(request: NextRequest) {
           error: `Backend retornou ${response.status}`,
           details: errorText,
         },
-        { status: response.status }
+        { status: response.status },
       );
     }
 
     const data = await response.json();
-    console.log("🧪 Dados do backend:", data);
+    logger.info(
+      "Login de teste bem-sucedido",
+      { hasToken: !!data.token },
+      "TestLoginAPI",
+    );
 
     return NextResponse.json({
       success: true,
@@ -43,7 +56,7 @@ export async function POST(request: NextRequest) {
       data,
     });
   } catch (error) {
-    console.error("🧪 Erro no teste de login:", error);
+    logger.error("Erro no teste de login", error, "TestLoginAPI");
 
     return NextResponse.json(
       {
@@ -51,7 +64,7 @@ export async function POST(request: NextRequest) {
         error: "Erro interno no teste",
         details: String(error),
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

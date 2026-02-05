@@ -1,7 +1,9 @@
 import axios from "axios";
 import { Bank } from "@/types";
+import { storage } from "@/utils/storage";
+import { API_CONFIG } from "@/core/config/constants";
 
-const API_BASE_URL = "https://barak-backend-665569303635.us-central1.run.app";
+const API_BASE_URL = API_CONFIG.BASE_URL;
 
 interface BackendBank {
   idBanco: number;
@@ -14,91 +16,101 @@ interface BackendBank {
 }
 
 interface BackendProposta {
-  idProposta: number;
+  id: number;
   idBanco: number;
-  valorFinanciado: number;
+  valorPropostaReal: number;
+  isFinanciado: string; // "SIM" | "NAO"
 }
 
 const getHeaders = () => {
-  const token = localStorage.getItem("jwt_token");
+  const token = storage.getItem("jwt_token");
   return {
     "Content-Type": "application/json",
     ...(token && { Authorization: `Bearer ${token}` }),
   };
 };
 
-// Função auxiliar para buscar financiamentos de um banco
-const fetchBankFinancing = async (bankId: number): Promise<number> => {
-  try {
-    // Buscar propostas do banco
-    const response = await axios.get<BackendProposta[]>(
-      `${API_BASE_URL}/proposta/listar`,
-      {
-        headers: getHeaders(),
-      }
-    );
-
-    if (response.data && Array.isArray(response.data)) {
-      // Filtrar propostas do banco e somar valores financiados
-      const total = response.data
-        .filter((proposta: BackendProposta) => proposta.idBanco === bankId)
-        .reduce((sum: number, proposta: BackendProposta) => {
-          const valorFinanciado = proposta.valorFinanciado || 0;
-          return sum + valorFinanciado;
-        }, 0);
-
-      return total;
-    }
-  } catch (error) {
-    console.error(`Erro ao buscar financiamentos do banco ${bankId}:`, error);
-  }
-
-  return 0;
-};
-
 const fetchBanks = async (): Promise<Bank[]> => {
-  const response = await axios.get<BackendBank[]>(
-    `${API_BASE_URL}/banco/listar`,
-    {
-      headers: getHeaders(),
+  try {
+    const [banksResponse, proposalsResponse] = await Promise.all([
+      axios.get<BackendBank[]>(`${API_BASE_URL}/banco/listar`, {
+        headers: getHeaders(),
+      }),
+      axios.get<BackendProposta[]>(`${API_BASE_URL}/proposta/listar`, {
+        headers: getHeaders(),
+      }),
+    ]);
+
+    const proposals = proposalsResponse.data || [];
+    const banks = banksResponse.data || [];
+
+    if (banks.length > 0) {
+      // Filter out null names
+      const validBanks = banks.filter(
+        (bank) => bank.nomeBanco != null && bank.nomeBanco.trim() !== ""
+      );
+
+      // Calculate totals in memory
+      const financingMap = new Map<number, number>();
+      
+      proposals.forEach((prop) => {
+        if (prop.idBanco && prop.isFinanciado === "SIM") {
+          const currentTotal = financingMap.get(prop.idBanco) || 0;
+          financingMap.set(prop.idBanco, currentTotal + (prop.valorPropostaReal || 0));
+        }
+      });
+
+      return validBanks.map((bank) => ({
+        id: bank.idBanco.toString(),
+        name: bank.nomeBanco as string,
+        code: bank.idBanco.toString().padStart(3, "0"),
+        totalFinancing: financingMap.get(bank.idBanco) || 0,
+        return1: bank.retorno1 || 0,
+        return2: bank.retorno2 || 0,
+        return3: bank.retorno3 || 0,
+        return4: bank.retorno4 || 0,
+        return5: bank.retorno5 || 0,
+      }));
     }
-  );
 
-  if (response.data && response.data.length > 0) {
-    // Map backend response to our Bank interface and filter out null names
-    const banks = response.data.filter(
-      (bank) => bank.nomeBanco != null && bank.nomeBanco.trim() !== ""
-    );
-
-    // Buscar totais de financiamento para cada banco
-    const banksWithFinancing = await Promise.all(
-      banks.map(async (bank) => {
-        const totalFinancing = await fetchBankFinancing(bank.idBanco);
-
-        return {
-          id: bank.idBanco.toString(),
-          name: bank.nomeBanco as string,
-          code: bank.idBanco.toString().padStart(3, "0"),
-          totalFinancing,
-        };
-      })
-    );
-
-    return banksWithFinancing;
+    return [];
+  } catch (error) {
+    console.error("Erro ao buscar bancos:", error);
+    return [];
   }
-
-  return [];
 };
 
 const saveBank = async (bank: Omit<Bank, "id">): Promise<Bank> => {
-  const response = await axios.post<Bank>(
+  const backendBank: Partial<BackendBank> = {
+    idBanco: bank.id ? parseInt(bank.id) : undefined,
+    nomeBanco: bank.name,
+    retorno1: bank.return1,
+    retorno2: bank.return2,
+    retorno3: bank.return3,
+    retorno4: bank.return4,
+    retorno5: bank.return5,
+  };
+
+  const response = await axios.post<BackendBank>(
     `${API_BASE_URL}/banco/salvar`,
-    bank,
+    backendBank,
     {
       headers: getHeaders(),
-    }
+    },
   );
-  return response.data;
+  
+  // Map response back to frontend Bank
+  const savedBank = response.data;
+  return {
+    id: savedBank.idBanco.toString(),
+    name: savedBank.nomeBanco as string,
+    code: savedBank.idBanco.toString().padStart(3, "0"),
+    return1: savedBank.retorno1 || 0,
+    return2: savedBank.retorno2 || 0,
+    return3: savedBank.retorno3 || 0,
+    return4: savedBank.retorno4 || 0,
+    return5: savedBank.retorno5 || 0,
+  };
 };
 
 const deleteBank = async (bankId: string): Promise<void> => {

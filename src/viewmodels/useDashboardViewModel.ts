@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useQueries } from "@tanstack/react-query";
 import {
   StatCardData,
   Vehicle,
@@ -12,9 +13,18 @@ import {
   useVehicleSalesByBrand,
   useTopSellers,
   useFinancingByBank,
+  reportKeys,
 } from "@/hooks/useReports";
-import { useProposals } from "@/hooks/useProposalsAndSales";
-import { useClients, useVehicles, useExpenses } from "@/hooks/useEntities";
+import { useProposals, proposalKeys } from "@/hooks/useProposalsAndSales";
+import {
+  useClients,
+  useVehicles,
+  useExpenses,
+  clientKeys,
+} from "@/hooks/useEntities";
+import { ReportService } from "@/services/ReportService";
+import { ProposalService } from "@/services/ProposalService";
+import { ClientService } from "@/services/ClientService";
 
 interface DashboardViewModel {
   isLoading: boolean;
@@ -62,41 +72,92 @@ interface DashboardViewModel {
 }
 
 export const useDashboardViewModel = (): DashboardViewModel => {
-  // Usar React Query hooks
-  const {
-    data: summaryData,
-    isLoading: summaryLoading,
-    error: summaryError,
-  } = useReportSummary();
-  const {
-    data: salesByMonthData,
-    isLoading: salesLoading,
-    error: salesError,
-  } = useSalesByMonth();
-  const { data: vehicleSalesByBrandData, isLoading: brandsLoading } =
-    useVehicleSalesByBrand();
-  const { data: topSellersData, isLoading: sellersLoading } = useTopSellers();
-  const { data: financingByBankData, isLoading: financingLoading } =
-    useFinancingByBank();
-  const { data: proposalsData, isLoading: proposalsLoading } = useProposals();
-  const { data: clientsData, isLoading: clientsLoading } = useClients();
-  const { data: vehiclesData, isLoading: vehiclesLoading } = useVehicles();
-  const {
-    // data: expensesData, // TODO: implementar uso dos dados de despesas
-    isLoading: expensesLoading,
-  } = useExpenses();
+  // 🚀 OTIMIZAÇÃO: Usar useQueries para carregar TODAS queries em PARALELO
+  // Ao invés de 8 hooks sequenciais, todas as queries iniciam simultaneamente
+  const queries = useQueries({
+    queries: [
+      // Query 1: Resumo (mais crítica)
+      {
+        queryKey: reportKeys.summary(),
+        queryFn: ReportService.fetchReportSummary,
+        staleTime: 2 * 60 * 1000, // 2 min
+      },
+      // Query 2: Vendas por mês (para gráfico)
+      {
+        queryKey: reportKeys.salesByMonth(),
+        queryFn: ReportService.fetchSalesByMonth,
+        staleTime: 5 * 60 * 1000, // 5 min
+      },
+      // Query 3: Vendas por marca
+      {
+        queryKey: reportKeys.vehiclesByBrand(),
+        queryFn: ReportService.fetchVehicleSalesByBrand,
+        staleTime: 10 * 60 * 1000, // 10 min
+      },
+      // Query 4: Top vendedores
+      {
+        queryKey: reportKeys.topSellers(),
+        queryFn: ReportService.fetchTopSellers,
+        staleTime: 5 * 60 * 1000,
+      },
+      // Query 5: Financiamentos por banco
+      {
+        queryKey: reportKeys.financingByBank(),
+        queryFn: ReportService.fetchFinancingByBank,
+        staleTime: 10 * 60 * 1000,
+      },
+      // Query 6: Propostas
+      {
+        queryKey: proposalKeys.list(),
+        queryFn: ProposalService.fetchProposals,
+        staleTime: 5 * 60 * 1000,
+      },
+      // Query 7: Clientes
+      {
+        queryKey: clientKeys.list(),
+        queryFn: ClientService.fetchClients,
+        staleTime: 5 * 60 * 1000,
+      },
+    ],
+  });
 
-  const isLoading =
-    summaryLoading ||
-    salesLoading ||
+  // Desestruturar resultados das queries paralelas
+  const [
+    { data: summaryData, isLoading: summaryLoading, error: summaryError },
+    { data: salesByMonthData, isLoading: salesLoading, error: salesError },
+    { data: vehicleSalesByBrandData, isLoading: brandsLoading },
+    { data: topSellersData, isLoading: sellersLoading },
+    { data: financingByBankData, isLoading: financingLoading },
+    { data: proposalsData, isLoading: proposalsLoading },
+    { data: clientsData, isLoading: clientsLoading },
+  ] = queries;
+
+  // Veículos e despesas são opcionais (backend não implementado)
+  const { data: vehiclesData } = useVehicles();
+
+  // 🎯 OTIMIZAÇÃO: Loading mais inteligente
+  // Apenas queries críticas bloqueiam a UI
+  const criticalLoading = summaryLoading || salesLoading;
+  const isLoading = criticalLoading;
+
+  // Queries secundárias podem carregar em background
+  const secondaryLoading =
     brandsLoading ||
     sellersLoading ||
     financingLoading ||
     proposalsLoading ||
-    clientsLoading ||
-    vehiclesLoading ||
-    expensesLoading;
+    clientsLoading;
+
   const error = summaryError || salesError;
+
+  // Log de performance (apenas em dev)
+  if (process.env.NODE_ENV === "development") {
+    const loadedCount = queries.filter((q) => !q.isLoading).length;
+    const totalCount = queries.length;
+    if (loadedCount > 0 && loadedCount === totalCount) {
+      console.log("✅ [Dashboard] Todas queries carregadas em paralelo");
+    }
+  }
 
   // Calcular stat cards baseado nos dados reais
   const statCards: StatCardData[] = useMemo(() => {
@@ -180,7 +241,7 @@ export const useDashboardViewModel = (): DashboardViewModel => {
     if (!proposalsData || !clientsData) return 0;
     const totalProposals = proposalsData.length;
     const approvedProposals = proposalsData.filter(
-      (p) => p.status === "FINALIZADA"
+      (p) => p.status === "FINALIZADA",
     ).length;
     return totalProposals > 0 ? (approvedProposals / totalProposals) * 100 : 0;
   }, [proposalsData, clientsData]);
@@ -250,7 +311,7 @@ export const useDashboardViewModel = (): DashboardViewModel => {
     if (!vehiclesData) return [];
 
     const carsInStock = vehiclesData.filter(
-      (v) => v.status === "in_stock"
+      (v) => v.status === "in_stock",
     ).length;
     const carsSold = vehiclesData.filter((v) => v.status === "sold").length;
 

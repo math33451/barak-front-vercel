@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import {
   Car,
   ShoppingBag,
@@ -10,6 +11,7 @@ import {
   Target,
   Percent,
   DollarSign,
+  CalendarCheck,
 } from "lucide-react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import StatCard from "@/components/dashboard/StatCard";
@@ -26,6 +28,7 @@ import AlertsPanel, {
 } from "../../components/dashboard/AlertsPanel";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { useDashboardViewModel } from "@/viewmodels/useDashboardViewModel";
+import ClosureModal from "@/components/modals/ClosureModal";
 
 const ICONS: { [key: string]: React.ReactNode } = {
   ShoppingBag: <ShoppingBag className="h-6 w-6 text-blue-600" />,
@@ -37,6 +40,7 @@ const ICONS: { [key: string]: React.ReactNode } = {
 
 export default function Dashboard() {
   const router = useRouter();
+  const [isClosureModalOpen, setIsClosureModalOpen] = useState(false);
   const {
     isLoading,
     error,
@@ -95,7 +99,16 @@ export default function Dashboard() {
       {/* Header com resumo executivo */}
       <div className="mb-8">
         <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg p-6 text-white">
-          <h1 className="text-2xl font-bold mb-2">Visão Geral do Negócio</h1>
+          <div className="flex justify-between items-start mb-4">
+            <h1 className="text-2xl font-bold">Visão Geral do Negócio</h1>
+            <button
+              onClick={() => setIsClosureModalOpen(true)}
+              className="btn btn-sm bg-white/20 border-white/30 text-white hover:bg-white/30 hover:border-white/50 backdrop-blur-sm flex items-center gap-2"
+            >
+              <CalendarCheck className="w-4 h-4" />
+              Fechar Mês
+            </button>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="text-center">
               <div className="text-3xl font-bold">
@@ -334,6 +347,11 @@ export default function Dashboard() {
         />
         <AlertsPanel alerts={alerts} maxVisible={4} />
       </div>
+
+      <ClosureModal
+        isOpen={isClosureModalOpen}
+        onClose={() => setIsClosureModalOpen(false)}
+      />
     </DashboardLayout>
   );
 }

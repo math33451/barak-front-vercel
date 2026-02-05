@@ -22,6 +22,7 @@ export default function AgreementForm({
 }: AgreementFormProps) {
   const [unitId, setUnitId] = useState("");
   const [bankId, setBankId] = useState("");
+  const [percentage, setPercentage] = useState<number>(0);
 
   const [units, setUnits] = useState<UnidadeEmpresaDTO[]>([]);
   const [banks, setBanks] = useState<Bank[]>([]);
@@ -35,9 +36,11 @@ export default function AgreementForm({
     if (editingAgreement) {
       setUnitId(editingAgreement.unitId || "");
       setBankId(editingAgreement.bankId || "");
+      setPercentage(editingAgreement.agreementPercent || 0);
     } else {
       setUnitId("");
       setBankId("");
+      setPercentage(0);
     }
   }, [editingAgreement]);
 
@@ -45,16 +48,11 @@ export default function AgreementForm({
     e.preventDefault();
     const bankName = banks.find((b) => b.id === bankId)?.name || "";
 
-    // Os valores de retorno serão buscados automaticamente do backend
     onSave({
       unitId,
       bankId,
       bankName,
-      return1: 0, // Serão preenchidos pelo service
-      return2: 0,
-      return3: 0,
-      return4: 0,
-      return5: 0,
+      agreementPercent: percentage,
     });
   };
 
@@ -121,11 +119,24 @@ export default function AgreementForm({
             </div>
           </div>
 
-          <div className="mb-4 text-sm text-gray-600">
-            <p>
-              Os valores de retorno serão definidos automaticamente baseados no
-              banco selecionado.
-            </p>
+          <div className="mb-4">
+            <label
+              htmlFor="percentage"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Percentual do Acordo (%)
+            </label>
+            <input
+              type="number"
+              id="percentage"
+              value={percentage}
+              onChange={(e) => setPercentage(parseFloat(e.target.value))}
+              className="input w-full mt-1"
+              min="0"
+              max="100"
+              step="0.01"
+              required
+            />
           </div>
 
           <div className="flex justify-end gap-4 mt-6">

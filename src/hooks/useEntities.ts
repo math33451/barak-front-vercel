@@ -4,7 +4,6 @@ import { BankService } from "@/services/BankService";
 import { EmployeeService } from "@/services/EmployeeService";
 import { UnitService } from "@/services/UnitService";
 import { VehiclePageService } from "@/services/VehiclePageService";
-import { ExpenseService } from "@/services/ExpenseService";
 import { FinancingService } from "@/services/FinancingService";
 
 // Query keys
@@ -31,11 +30,6 @@ export const unitKeys = {
 export const vehicleKeys = {
   all: ["vehicles"] as const,
   list: () => [...vehicleKeys.all, "list"] as const,
-};
-
-export const expenseKeys = {
-  all: ["expenses"] as const,
-  list: () => [...expenseKeys.all, "list"] as const,
 };
 
 export const financingKeys = {
@@ -186,6 +180,8 @@ export const useVehicles = () => {
     queryFn: VehiclePageService.fetchVehicles,
     staleTime: 5 * 60 * 1000, // 5 minutos
     gcTime: 15 * 60 * 1000,
+    retry: false, // Não tentar novamente se falhar
+    enabled: false, // Desabilitar até backend implementar a rota
   });
 };
 
@@ -208,40 +204,6 @@ export const useDeleteVehicle = () => {
     mutationFn: VehiclePageService.deleteVehicle,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: vehicleKeys.all });
-      queryClient.invalidateQueries({ queryKey: ["reports"] });
-    },
-  });
-};
-
-// Hooks para despesas
-export const useExpenses = () => {
-  return useQuery({
-    queryKey: expenseKeys.list(),
-    queryFn: ExpenseService.fetchExpenses,
-    staleTime: 3 * 60 * 1000, // 3 minutos
-    gcTime: 10 * 60 * 1000,
-  });
-};
-
-export const useCreateExpense = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: ExpenseService.saveExpense,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: expenseKeys.all });
-      queryClient.invalidateQueries({ queryKey: ["reports"] }); // Afeta relatórios financeiros
-    },
-  });
-};
-
-export const useDeleteExpense = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: ExpenseService.deleteExpense,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: expenseKeys.all });
       queryClient.invalidateQueries({ queryKey: ["reports"] });
     },
   });

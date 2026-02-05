@@ -1,5 +1,6 @@
 import { UnidadeEmpresaDTO } from "@/types";
 import { httpClient } from "@/infra/httpClient";
+import { API_ENDPOINTS } from "@/core/config/constants";
 
 // Interface baseada no que foi usado no script de população
 interface BackendUnidadeEmpresa {
@@ -66,8 +67,23 @@ const deleteUnit = async (unitId: number): Promise<void> => {
   await httpClient.delete<void>(`/unidade/${unitId}`);
 };
 
+const updateMeta = async (id: number, meta: number): Promise<void> => {
+  await httpClient.get(API_ENDPOINTS.UNITS.UPDATE_META(id.toString(), meta));
+};
+
+const updateStock = async (id: number, qty: number): Promise<void> => {
+  await httpClient.get(API_ENDPOINTS.UNITS.UPDATE_STOCK(id.toString(), qty));
+};
+
+const updateVisits = async (id: number, qty: number): Promise<void> => {
+  await httpClient.get(API_ENDPOINTS.UNITS.UPDATE_VISITS(id.toString(), qty));
+};
+
 export const UnitService = {
   fetchUnits,
   saveUnit,
   deleteUnit,
+  updateMeta,
+  updateStock,
+  updateVisits,
 };

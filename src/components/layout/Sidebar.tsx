@@ -1,18 +1,14 @@
 import React from "react";
 import {
   Car,
-  ShoppingBag,
   Users,
-  CreditCard,
   BarChart3,
   TrendingUp,
   Settings,
   X,
-  Repeat,
   UserCheck,
   Building,
   FileText,
-  Receipt,
   Landmark,
 } from "lucide-react";
 import Link from "next/link";
@@ -68,16 +64,6 @@ export default function Sidebar({
       icon: <Landmark className="h-5 w-5" />,
     },
     {
-      href: "/financiamento",
-      label: "Financiamento",
-      icon: <CreditCard className="h-5 w-5" />,
-    },
-    {
-      href: "/retorno",
-      label: "Retorno",
-      icon: <Repeat className="h-5 w-5" />,
-    },
-    {
       href: "/clientes",
       label: "Clientes",
       icon: <Users className="h-5 w-5" />,
@@ -86,11 +72,6 @@ export default function Sidebar({
       href: "/configuracoes",
       label: "Configurações",
       icon: <Settings className="h-5 w-5" />,
-    },
-    {
-      href: "/despesas",
-      label: "Despesas",
-      icon: <Receipt className="h-5 w-5" />,
     },
     {
       href: "/funcionarios",
@@ -111,11 +92,6 @@ export default function Sidebar({
       href: "/veiculos",
       label: "Veículos",
       icon: <Car className="h-5 w-5" />,
-    },
-    {
-      href: "/vendas",
-      label: "Vendas",
-      icon: <ShoppingBag className="h-5 w-5" />,
     },
   ];
 
