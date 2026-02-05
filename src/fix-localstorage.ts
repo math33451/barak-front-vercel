@@ -4,14 +4,14 @@
  */
 
 // Tipo para global com propriedades Storage opcionais
-interface GlobalWithStorage extends NodeJS.Global {
+type GlobalWithStorage = typeof globalThis & {
   localStorage?: Storage;
   sessionStorage?: Storage;
-}
+};
 
 // Executar apenas no servidor (Node.js)
 if (typeof window === "undefined") {
-  const globalObj = global as GlobalWithStorage;
+  const globalObj = global as unknown as GlobalWithStorage;
   const isDev = process.env.NODE_ENV === "development";
 
   if (isDev) {
@@ -61,8 +61,10 @@ if (typeof window === "undefined") {
   const sessionStoragePolyfill = new LocalStoragePolyfill();
 
   // Deletar qualquer definição existente e redefinir
-  delete globalObj.localStorage;
-  delete globalObj.sessionStorage;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  delete (globalObj as any).localStorage;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  delete (globalObj as any).sessionStorage;
 
   // Definir com Object.defineProperty para garantir que não seja sobrescrito
   Object.defineProperty(globalObj, "localStorage", {

@@ -30,7 +30,7 @@ export async function register() {
       console.log("🔧 [Instrumentation] Fix carregado");
 
       // Verificar se funcionou
-      const globalObj = global as NodeJS.Global & {
+      const globalObj = global as unknown as {
         localStorage?: Storage;
       };
 

@@ -82,13 +82,14 @@ const fetchBanks = async (): Promise<Bank[]> => {
 
 const saveBank = async (bank: Omit<Bank, "id">): Promise<Bank> => {
   const backendBank: Partial<BackendBank> = {
-    idBanco: bank.id ? parseInt(bank.id) : undefined,
-    nomeBanco: bank.name,
-    retorno1: bank.return1,
-    retorno2: bank.return2,
-    retorno3: bank.return3,
-    retorno4: bank.return4,
-    retorno5: bank.return5,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    idBanco: (bank as any).id ? parseInt((bank as any).id) : undefined,
+    nomeBanco: bank.name as string,
+    retorno1: bank.return1 as number,
+    retorno2: bank.return2 as number,
+    retorno3: bank.return3 as number,
+    retorno4: bank.return4 as number,
+    retorno5: bank.return5 as number,
   };
 
   const response = await axios.post<BackendBank>(

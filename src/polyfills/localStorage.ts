@@ -38,14 +38,14 @@ class LocalStorageMock implements Storage {
 }
 
 // Tipo para global com propriedades Storage opcionais
-interface GlobalWithStorage extends NodeJS.Global {
+type GlobalWithStorage = typeof globalThis & {
   localStorage?: Storage;
   sessionStorage?: Storage;
-}
+};
 
 // Executar apenas no servidor
 if (typeof window === "undefined") {
-  const globalObj = global as GlobalWithStorage;
+  const globalObj = global as unknown as GlobalWithStorage;
 
   // Criar instância do mock
   const localStorageMock = new LocalStorageMock();

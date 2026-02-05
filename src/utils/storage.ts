@@ -6,12 +6,12 @@
 // Fix para localStorage mockado incorretamente no servidor
 if (typeof window === "undefined" && typeof global !== "undefined") {
   // Tipo para global com propriedades Storage opcionais
-  interface GlobalWithStorage extends NodeJS.Global {
+  type GlobalWithStorage = typeof globalThis & {
     localStorage?: Storage;
     sessionStorage?: Storage;
-  }
+  };
 
-  const globalObj = global as GlobalWithStorage;
+  const globalObj = global as unknown as GlobalWithStorage;
 
   // Se localStorage existe mas está quebrado, sobrescrever
   if (

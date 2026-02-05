@@ -60,7 +60,7 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ["lucide-react", "chart.js", "react-chartjs-2"],
 
     // Otimiza CSS (experimental)
-    optimizeCss: true,
+    optimizeCss: false,
   },
 
   /* ========================================

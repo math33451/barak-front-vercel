@@ -34,7 +34,6 @@ export {
 } from "./useReports";
 
 export {
-  useSales,
   useProposals,
   useCreateProposal,
   useApproveProposal,

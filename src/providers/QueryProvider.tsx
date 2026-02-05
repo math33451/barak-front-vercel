@@ -60,7 +60,8 @@ export function QueryProvider({ children }: QueryProviderProps) {
             networkMode: "online", // Só fazer requests quando online
 
             // Prefetching
-            placeholderData: (previousData) => previousData, // Manter dados anteriores enquanto revalida
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            placeholderData: (previousData: any) => previousData, // Manter dados anteriores enquanto revalida
           },
           mutations: {
             // Retry Strategy para mutations
@@ -115,17 +116,10 @@ export function QueryProvider({ children }: QueryProviderProps) {
       },
     };
 
-    // Iniciar persistência (retorna unsubscribe function, não Promise)
+    // Iniciar persistência
     try {
-      const unsubscribe = persistQueryClient(persistOptions);
+      persistQueryClient(persistOptions);
       console.log("✅ [Cache] Persistência configurada com sucesso");
-
-      // Cleanup ao desmontar
-      return () => {
-        if (typeof unsubscribe === "function") {
-          unsubscribe();
-        }
-      };
     } catch (error) {
       console.warn("⚠️ [Cache] Erro ao configurar persistência:", error);
     }
@@ -214,7 +208,6 @@ export function QueryProvider({ children }: QueryProviderProps) {
       {process.env.NODE_ENV === "development" && (
         <ReactQueryDevtools
           initialIsOpen={false}
-          position="bottom-right"
           buttonPosition="bottom-right"
         />
       )}
