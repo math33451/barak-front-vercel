@@ -118,11 +118,11 @@ export const useDashboardViewModel = (): DashboardViewModel => {
   const [
     { data: summaryData, isLoading: summaryLoading, error: summaryError },
     { data: salesByMonthData, isLoading: salesLoading, error: salesError },
-    { data: vehicleSalesByBrandData, isLoading: brandsLoading },
-    { data: topSellersData, isLoading: sellersLoading },
-    { data: financingByBankData, isLoading: financingLoading },
-    { data: proposalsData, isLoading: proposalsLoading },
-    { data: clientsData, isLoading: clientsLoading },
+    { data: vehicleSalesByBrandData },
+    { data: topSellersData },
+    { data: financingByBankData },
+    { data: proposalsData },
+    { data: clientsData },
   ] = queries;
 
   // Veículos e despesas são opcionais (backend não implementado)
