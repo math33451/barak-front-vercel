@@ -102,7 +102,7 @@ export default function TestsPage() {
                 URL da API
               </label>
               <code className="block p-2 bg-gray-100 rounded text-sm">
-                {process.env.NEXT_PUBLIC_API_URL || "https://barak-backend-665569303635.us-central1.run.app"}
+                {process.env.NEXT_PUBLIC_API_URL || "http://localhost:8089"}
               </code>
             </div>
             <div>

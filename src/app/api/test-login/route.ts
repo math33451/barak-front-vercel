@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
     logger.info("Teste de login via API", { email }, "TestLoginAPI");
 
     // Faz a requisição direta para o backend
-    const response = await fetch("https://barak-backend-665569303635.us-central1.run.app/auth/login", {
+    const response = await fetch("http://localhost:8089/auth/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -143,6 +143,7 @@ export function useOptimizedDashboard() {
  */
 export function useOptimizedPageLoad(
   queryKeys: string[][],
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   queryFns: (() => Promise<any>)[],
   staleTime: number = 5 * 60 * 1000,
 ) {

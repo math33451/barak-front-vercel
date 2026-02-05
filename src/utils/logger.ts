@@ -252,6 +252,7 @@ class Logger {
   async measureAsync<T>(
     name: string,
     fn: () => Promise<T>,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     context?: string
   ): Promise<T> {
     this.startPerformance(name);
@@ -269,7 +270,9 @@ class Logger {
   /**
    * Loga performance de função síncrona
    */
-  measure<T>(name: string, fn: () => T, context?: string): T {
+  measure<T>(name: string, fn: () => T, 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    context?: string): T {
     this.startPerformance(name);
 
     try {

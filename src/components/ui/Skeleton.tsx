@@ -285,7 +285,7 @@ export const SkeletonPage: React.FC<{
 );
 
 // Export default com todos os componentes
-export default {
+const Skeletons = {
   Skeleton,
   SkeletonText,
   SkeletonParagraph,
@@ -300,3 +300,5 @@ export default {
   SkeletonForm,
   SkeletonPage,
 };
+
+export default Skeletons;

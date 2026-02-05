@@ -171,7 +171,6 @@ export default function Relatorios() {
     setTaxaConversao,
     setTicketMedio,
     setPercentualFinanciamento,
-    // metricasReais,
     tamanhoEquipeReal,
   } = useReportViewModel();
 

@@ -8,6 +8,7 @@ interface FechamentoRequest {
 
 interface FechamentoResponse {
   // Adicionar campos se soubermos a resposta, por enquanto 'any'
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }
 

@@ -8,18 +8,11 @@ import {
   BrandDistribution,
 } from "@/types";
 import {
-  useReportSummary,
-  useSalesByMonth,
-  useVehicleSalesByBrand,
-  useTopSellers,
-  useFinancingByBank,
   reportKeys,
 } from "@/hooks/useReports";
-import { useProposals, proposalKeys } from "@/hooks/useProposalsAndSales";
+import { proposalKeys } from "@/hooks/useProposalsAndSales";
 import {
-  useClients,
   useVehicles,
-  useExpenses,
   clientKeys,
 } from "@/hooks/useEntities";
 import { ReportService } from "@/services/ReportService";
@@ -141,12 +134,12 @@ export const useDashboardViewModel = (): DashboardViewModel => {
   const isLoading = criticalLoading;
 
   // Queries secundárias podem carregar em background
-  const secondaryLoading =
-    brandsLoading ||
-    sellersLoading ||
-    financingLoading ||
-    proposalsLoading ||
-    clientsLoading;
+  // const secondaryLoading =
+  //   brandsLoading ||
+  //   sellersLoading ||
+  //   financingLoading ||
+  //   proposalsLoading ||
+  //   clientsLoading;
 
   const error = summaryError || salesError;
 
